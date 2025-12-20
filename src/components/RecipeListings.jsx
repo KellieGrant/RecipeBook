@@ -1,9 +1,25 @@
 import React from 'react';
-import recipes from '../recipes.json';
+import { useState, useEffect } from 'react';
 import RecipeListing from './RecipeListing';
 
 const RecipeListings = ({ isHome = false }) => {
-   const recipeListings = isHome ? recipes.slice(0, 3) : recipes;
+   const [recipes, setRecipes] = useState([]);
+   const [loading, setLoading] = useState(true);
+
+   useEffect(() => {
+      const fetchRecipes = async () => {
+         try {
+            const res = await fetch('http://localhost:8000/recipes');
+            const data = await res.json();
+            setRecipes(data);
+         } catch (error) {
+            console.log('Error fetching data', error);
+         } finally {
+            setLoading(false);
+         }
+      };
+      fetchRecipes();
+   }, []);
 
    return (
       <section className='bg-light-bg px-4 py-10'>
@@ -12,7 +28,7 @@ const RecipeListings = ({ isHome = false }) => {
                {isHome ? 'Recent Recipes' : 'Browse Recipes'}
             </h2>
             <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
-               {recipeListings.map(recipe => (
+               {recipes.map(recipe => (
                   <RecipeListing key={recipe.id} recipe={recipe} />
                ))}
             </div>
