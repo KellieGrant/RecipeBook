@@ -5,8 +5,8 @@ import Logo from '../assets/images/logo.png';
 const Navbar = () => {
    const linkClass = ({ isActive }) =>
       isActive
-         ? 'text-white bg-light-accent hover:bg-light-accent hover:text-white rounded-md px-3 py-2'
-         : 'text-dark-surface hover:bg-light-accent hover:text-white rounded-md px-3 py-2';
+         ? 'text-white font-bold bg-light-accent hover:bg-light-accent hover:text-white rounded-md px-3 py-2'
+         : 'text-dark-surface font-bold hover:bg-light-accent hover:text-white rounded-md px-3 py-2';
 
    return (
       <>

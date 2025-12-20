@@ -7,7 +7,7 @@ const ViewAllRecipes = () => {
          <section className='m-auto max-w-lg my-10 px-6'>
             <Link
                to='/recipes'
-               className='block bg-light-accent text-black text-center py-4 px-6 rounded-xl hover:bg-[#6aa16e]'
+               className='block bg-light-accent text-black font-bold text-center py-4 px-6 rounded-xl hover:bg-[#6aa16e]'
             >
                View All Recipes
             </Link>
