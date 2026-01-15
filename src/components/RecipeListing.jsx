@@ -41,7 +41,7 @@ const RecipeListing = ({ recipe }) => {
                      {recipe.location}
                   </div>
                   <Link
-                     to={`/recipe/${recipe.id}`}
+                     to={`/recipes/${recipe.id}`}
                      className='h-[36px] bg-light-accent hover:bg-[#6aa16e] text-black px-4 py-2 rounded-lg text-center text-sm'
                   >
                      Read More
