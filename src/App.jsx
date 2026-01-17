@@ -10,6 +10,7 @@ import HomePage from './pages/HomePage';
 import RecipesPage from './pages/RecipesPage';
 import NotFoundPage from './pages/NotFoundPage';
 import RecipePage, { recipeLoader } from './pages/RecipePage';
+import AddRecipePage from './pages/AddRecipePage';
 
 const router = createBrowserRouter(
    createRoutesFromElements(
@@ -21,9 +22,10 @@ const router = createBrowserRouter(
             element={<RecipePage />}
             loader={recipeLoader}
          />
+         <Route path='/add-recipe' element={<AddRecipePage />} />
          <Route path='*' element={<NotFoundPage />} />
-      </Route>
-   )
+      </Route>,
+   ),
 );
 
 const App = () => {
