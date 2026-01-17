@@ -14,7 +14,7 @@ const HomeCards = () => {
                   </p>
                   <Link
                      to='/recipes'
-                     className='inline-block bg-light-accent text-black rounded-lg px-4 py-2 hover:bg-[#6aa16e]'
+                     className='inline-block bg-light-accent text-black rounded-lg px-4 py-2 hover:bg-[#6aa16e] shadow-md'
                   >
                      Browse Recipes
                   </Link>
@@ -26,7 +26,7 @@ const HomeCards = () => {
                   </p>
                   <Link
                      to='/add-recipe'
-                     className='inline-block bg-light-accent text-black rounded-lg px-4 py-2 hover:bg-[#6aa16e]'
+                     className='inline-block bg-light-accent text-black rounded-lg px-4 py-2 hover:bg-[#6aa16e] shadow-md'
                   >
                      Add Recipe
                   </Link>

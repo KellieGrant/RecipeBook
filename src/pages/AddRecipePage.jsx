@@ -1,13 +1,43 @@
 import React from 'react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const AddRecipePage = () => {
+const AddRecipePage = ({ addRecipeSubmit }) => {
+   const [title, setTitle] = useState('');
+   const [type, setType] = useState('Breakfast');
+   const [description, setDescription] = useState('');
+   const [time, setTime] = useState('10 min');
+   const [creatorName, setCreatorName] = useState('');
+   const [creatorIngredients, setCreatorIngredients] = useState('');
+
+   const navigate = useNavigate();
+
+   const submitForm = e => {
+      e.preventDefault();
+
+      const newRecipe = {
+         title,
+         type,
+         description,
+         time,
+         creator: {
+            name: creatorName,
+            ingredients: creatorIngredients,
+         },
+      };
+
+      addRecipeSubmit(newRecipe);
+
+      return navigate('/recipes');
+   };
+
    return (
-      <section className='bg-indigo-50'>
+      <section className='bg-light-bg'>
          <div className='container m-auto max-w-2xl py-24'>
-            <div className='bg-white px-6 py-8 mb-4 shadow-md rounded-md border m-4 md:m-0'>
-               <form>
+            <div className='bg-light-secondary px-6 py-8 mb-4 shadow-md rounded-md border m-4 md:m-0'>
+               <form onSubmit={submitForm}>
                   <h2 className='text-3xl text-center font-semibold mb-6'>
-                     Add Job
+                     Add Recipe
                   </h2>
 
                   <div className='mb-4'>
@@ -15,32 +45,36 @@ const AddRecipePage = () => {
                         htmlFor='type'
                         className='block text-gray-700 font-bold mb-2'
                      >
-                        Job Type
+                        Meal Type
                      </label>
                      <select
                         id='type'
                         name='type'
-                        className='border rounded w-full py-2 px-3'
+                        className='border rounded w-full py-2 px-3 shadow-md'
                         required
+                        value={type}
+                        onChange={e => setType(e.target.value)}
                      >
-                        <option value='Full-Time'>Full-Time</option>
-                        <option value='Part-Time'>Part-Time</option>
-                        <option value='Remote'>Remote</option>
-                        <option value='Internship'>Internship</option>
+                        <option value='Breakfast'>Breakfast</option>
+                        <option value='Lunch'>Lunch</option>
+                        <option value='Dinner'>Dinner</option>
+                        <option value='Desert'>Desert</option>
                      </select>
                   </div>
 
                   <div className='mb-4'>
                      <label className='block text-gray-700 font-bold mb-2'>
-                        Job Listing Name
+                        Recipe Name
                      </label>
                      <input
                         type='text'
                         id='title'
                         name='title'
-                        className='border rounded w-full py-2 px-3 mb-2'
-                        placeholder='eg. Beautiful Apartment In Miami'
+                        className='border rounded w-full py-2 px-3 mb-2 shadow-md'
+                        placeholder='eg. Chicken Noodle Soup'
                         required
+                        value={title}
+                        onChange={e => setTitle(e.target.value)}
                      />
                   </div>
                   <div className='mb-4'>
@@ -48,14 +82,16 @@ const AddRecipePage = () => {
                         htmlFor='description'
                         className='block text-gray-700 font-bold mb-2'
                      >
-                        Description
+                        Instructions
                      </label>
                      <textarea
                         id='description'
                         name='description'
-                        className='border rounded w-full py-2 px-3'
+                        className='border rounded w-full py-2 px-3 shadow-md'
                         rows='4'
-                        placeholder='Add any job duties, expectations, requirements, etc'
+                        placeholder='How do you make this recipe?'
+                        value={description}
+                        onChange={e => setDescription(e.target.value)}
                      ></textarea>
                   </div>
 
@@ -64,114 +100,73 @@ const AddRecipePage = () => {
                         htmlFor='type'
                         className='block text-gray-700 font-bold mb-2'
                      >
-                        Salary
+                        Time
                      </label>
                      <select
-                        id='salary'
-                        name='salary'
-                        className='border rounded w-full py-2 px-3'
-                        required
+                        id='time'
+                        name='time'
+                        className='border rounded w-full py-2 px-3 shadow-md'
+                        requiredvalue={time}
+                        onChange={e => setTime(e.target.value)}
                      >
-                        <option value='Under $50K'>Under $50K</option>
-                        <option value='$50K - 60K'>$50K - $60K</option>
-                        <option value='$60K - 70K'>$60K - $70K</option>
-                        <option value='$70K - 80K'>$70K - $80K</option>
-                        <option value='$80K - 90K'>$80K - $90K</option>
-                        <option value='$90K - 100K'>$90K - $100K</option>
-                        <option value='$100K - 125K'>$100K - $125K</option>
-                        <option value='$125K - 150K'>$125K - $150K</option>
-                        <option value='$150K - 175K'>$150K - $175K</option>
-                        <option value='$175K - 200K'>$175K - $200K</option>
-                        <option value='Over $200K'>Over $200K</option>
+                        <option value='10 min'>10 min</option>
+                        <option value='20 min'>20 min</option>
+                        <option value='30 min'>30 min</option>
+                        <option value='40 min'>40 min</option>
+                        <option value='50 min'>50 min</option>
+                        <option value='1 hour'>1 hour</option>
+                        <option value='2 hours'>2 hours</option>
+                        <option value='3 hours'>3 hours</option>
+                        <option value='4 hours'>4 hours</option>
+                        <option value='5 hours'>5 hours</option>
+                        <option value='other'>Other</option>
                      </select>
                   </div>
 
-                  <div className='mb-4'>
-                     <label className='block text-gray-700 font-bold mb-2'>
-                        Location
-                     </label>
-                     <input
-                        type='text'
-                        id='location'
-                        name='location'
-                        className='border rounded w-full py-2 px-3 mb-2'
-                        placeholder='Company Location'
-                        required
-                     />
-                  </div>
-
-                  <h3 className='text-2xl mb-5'>Company Info</h3>
+                  <h3 className='text-2xl mb-5'>Recipe Info</h3>
 
                   <div className='mb-4'>
                      <label
-                        htmlFor='company'
+                        htmlFor='creator_name'
                         className='block text-gray-700 font-bold mb-2'
                      >
-                        Company Name
+                        Creator Name
                      </label>
                      <input
                         type='text'
-                        id='company'
-                        name='company'
-                        className='border rounded w-full py-2 px-3'
-                        placeholder='Company Name'
+                        id='name'
+                        name='name'
+                        className='border rounded w-full py-2 px-3 shadow-md'
+                        placeholder='eg. Cailee Eats'
+                        requiredvalue={creatorName}
+                        onChange={e => setCreatorName(e.target.value)}
                      />
                   </div>
 
                   <div className='mb-4'>
                      <label
-                        htmlFor='company_description'
+                        htmlFor='creator_ingredients'
                         className='block text-gray-700 font-bold mb-2'
                      >
-                        Company Description
+                        Ingredients
                      </label>
                      <textarea
-                        id='company_description'
-                        name='company_description'
-                        className='border rounded w-full py-2 px-3'
+                        id='ingredients'
+                        name='ingredients'
+                        className='border rounded w-full py-2 px-3 shadow-md'
                         rows='4'
-                        placeholder='What does your company do?'
+                        placeholder='What ingredients are needed?'
+                        requiredvalue={creatorIngredients}
+                        onChange={e => setCreatorIngredients(e.target.value)}
                      ></textarea>
-                  </div>
-
-                  <div className='mb-4'>
-                     <label
-                        htmlFor='contact_email'
-                        className='block text-gray-700 font-bold mb-2'
-                     >
-                        Contact Email
-                     </label>
-                     <input
-                        type='email'
-                        id='contact_email'
-                        name='contact_email'
-                        className='border rounded w-full py-2 px-3'
-                        placeholder='Email address for applicants'
-                        required
-                     />
-                  </div>
-                  <div className='mb-4'>
-                     <label
-                        htmlFor='contact_phone'
-                        className='block text-gray-700 font-bold mb-2'
-                     >
-                        Contact Phone
-                     </label>
-                     <input
-                        type='tel'
-                        id='contact_phone'
-                        name='contact_phone'
-                        className='border rounded w-full py-2 px-3'
-                        placeholder='Optional phone for applicants'
-                     />
                   </div>
 
                   <div>
                      <button
-                        className='bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline'
+                        className='bg-light-accent hover:bg-[#6aa16e] text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline'
                         type='submit'
                      >
-                        Add Job
+                        Add Recipe
                      </button>
                   </div>
                </form>

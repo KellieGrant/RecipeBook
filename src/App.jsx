@@ -12,23 +12,42 @@ import NotFoundPage from './pages/NotFoundPage';
 import RecipePage, { recipeLoader } from './pages/RecipePage';
 import AddRecipePage from './pages/AddRecipePage';
 
-const router = createBrowserRouter(
-   createRoutesFromElements(
-      <Route path='/' element={<MainLayout />}>
-         <Route index element={<HomePage />} />
-         <Route path='/recipes' element={<RecipesPage />} />
-         <Route
-            path='/recipes/:id'
-            element={<RecipePage />}
-            loader={recipeLoader}
-         />
-         <Route path='/add-recipe' element={<AddRecipePage />} />
-         <Route path='*' element={<NotFoundPage />} />
-      </Route>,
-   ),
-);
-
 const App = () => {
+   // Add New Recipe
+   const addRecipe = async newRecipe => {
+      const res = await fetch('/api/recipes', {
+         method: 'POST',
+         headers: {
+            'Content-Type': 'application/json',
+         },
+         body: JSON.stringify(newRecipe),
+      });
+      return;
+   };
+
+   // Delete Recipe
+   const deleteRecipe = async id => {
+      console.log('delete', id);
+   };
+
+   const router = createBrowserRouter(
+      createRoutesFromElements(
+         <Route path='/' element={<MainLayout />}>
+            <Route index element={<HomePage />} />
+            <Route path='/recipes' element={<RecipesPage />} />
+            <Route
+               path='/recipes/:id'
+               element={<RecipePage deleteRecipe={deleteRecipe} />}
+               loader={recipeLoader}
+            />
+            <Route
+               path='/add-recipe'
+               element={<AddRecipePage addRecipeSubmit={addRecipe} />}
+            />
+            <Route path='*' element={<NotFoundPage />} />
+         </Route>,
+      ),
+   );
    return <RouterProvider router={router} />;
 };
 

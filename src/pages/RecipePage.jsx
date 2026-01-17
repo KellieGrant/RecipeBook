@@ -1,11 +1,24 @@
 import React from 'react';
-import { useParams, useLoaderData } from 'react-router-dom';
+import { useParams, useLoaderData, useNavigate } from 'react-router-dom';
 import { FaArrowLeft } from 'react-icons/fa6';
 import { Link } from 'react-router-dom';
 
-const RecipePage = () => {
+const RecipePage = ({ deleteRecipe }) => {
+   const navigate = useNavigate();
    const { id } = useParams();
    const recipe = useLoaderData();
+
+   const onDeleteClick = recipeId => {
+      const conirm = window.confirm(
+         'Are you sure you want to delete this recipe',
+      );
+
+      if (!confirm) return;
+
+      deleteRecipe(recipeId);
+
+      navigate('/recipes');
+   };
 
    return (
       <>
@@ -13,9 +26,9 @@ const RecipePage = () => {
             <div className='bg-light-accent w-full py-6 px-6'>
                <Link
                   to='/recipes'
-                  className='text-black hover:text-indigo-600 flex items-center'
+                  className='text-black hover:font-bold flex items-center'
                >
-                  <FaArrowLeft className='mr-2' /> Back to Job Listings
+                  <FaArrowLeft className='mr-2' /> Back to Recipes
                </Link>
             </div>
          </section>
@@ -39,13 +52,13 @@ const RecipePage = () => {
 
                      <div className='bg-light-secondary p-6 rounded-lg shadow-md mt-6'>
                         <h3 className='text-light-accent text-lg font-bold mb-6'>
-                           Job Description
+                           Recipe Instructions
                         </h3>
 
                         <p className='mb-4'>{recipe.description}</p>
 
                         <h3 className='text-light-accent text-lg font-bold mb-2'>
-                           Salary
+                           Time
                         </h3>
 
                         <p className='mb-4'>{recipe.salary}</p>
@@ -56,25 +69,13 @@ const RecipePage = () => {
                   <aside>
                      {/* <!-- Company Info --> */}
                      <div className='bg-light-secondary p-6 rounded-lg shadow-md'>
-                        <h3 className='text-xl font-bold mb-6'>Company Info</h3>
+                        <h3 className='text-xl font-bold mb-6'>Creator</h3>
 
-                        <h2 className='text-2xl'>{recipe.company.name}</h2>
+                        <p className='text-2xl mb-6'>{recipe.creator.name}</p>
 
-                        <p className='my-2'>{recipe.company.description}</p>
+                        <h3 className='text-xl font-bold mb-6'>Ingredients</h3>
 
-                        <hr className='my-4' />
-
-                        <h3 className='text-xl'>Contact Email:</h3>
-
-                        <p className='my-2 bg-light-bg p-2 font-bold shadow-md'>
-                           {recipe.company.contactEmail}
-                        </p>
-
-                        <h3 className='text-xl'>Contact Phone:</h3>
-
-                        <p className='my-2 bg-light-bg p-2 font-bold shadow-md'>
-                           {recipe.company.contactPhone}
-                        </p>
+                        <p className='my-2'>{recipe.creator.ingredients}</p>
                      </div>
 
                      {/* <!-- Manage --> */}
@@ -86,7 +87,10 @@ const RecipePage = () => {
                         >
                            Edit Job
                         </Link>
-                        <button className='bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline mt-4 block'>
+                        <button
+                           onClick={() => onDeleteClick(recipe.id)}
+                           className='bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline mt-4 block'
+                        >
                            Delete Job
                         </button>
                      </div>
