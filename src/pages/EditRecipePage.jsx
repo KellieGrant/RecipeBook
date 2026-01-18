@@ -4,13 +4,25 @@ import { toast } from 'react-toastify';
 
 const EditRecipePage = ({ updateRecipeSubmit }) => {
    const recipe = useLoaderData();
-   const [title, setTitle] = useState(recipe.title);
-   const [type, setType] = useState(recipe.type);
-   const [description, setDescription] = useState(recipe.description);
-   const [time, setTime] = useState(recipe.time);
-   const [creatorName, setCreatorName] = useState(recipe.creator.name);
+
+   const norlaizedRecipe = {
+      title: recipe.title ?? '',
+      type: recipe.type ?? '',
+      description: recipe.description ?? '',
+      time: recipe.time ?? '',
+      creator: {
+         name: recipe.creator?.name ?? '',
+         ingredients: recipe.creator?.ingredients ?? '',
+      },
+   };
+
+   const [title, setTitle] = useState(norlaizedRecipe.title);
+   const [type, setType] = useState(norlaizedRecipe.type);
+   const [description, setDescription] = useState(norlaizedRecipe.description);
+   const [time, setTime] = useState(norlaizedRecipe.time);
+   const [creatorName, setCreatorName] = useState(norlaizedRecipe.creator.name);
    const [creatorIngredients, setCreatorIngredients] = useState(
-      recipe.creator.ingredients,
+      norlaizedRecipe.creator.ingredients,
    );
 
    const navigate = useNavigate();
