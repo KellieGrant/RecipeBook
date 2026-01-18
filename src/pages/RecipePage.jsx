@@ -66,12 +66,7 @@ const RecipePage = ({ deleteRecipe }) => {
                                  <li key={index}>{item}</li>
                               ))}
                         </ul>
-                     </div>
-                  </main>
 
-                  {/* <!-- Sidebar --> */}
-                  <aside>
-                     <div className='bg-light-secondary p-6 rounded-lg shadow-md'>
                         <h3 className='text-light-accent text-lg font-bold mb-6'>
                            Recipe Instructions
                         </h3>
@@ -84,7 +79,12 @@ const RecipePage = ({ deleteRecipe }) => {
                                  <li key={index}>{step}</li>
                               ))}
                         </ol>
+                     </div>
+                  </main>
 
+                  {/* <!-- Sidebar --> */}
+                  <aside>
+                     <div className='bg-light-secondary p-6 rounded-lg shadow-md'>
                         <h3 className='text-light-accent text-m font-bold mb-1'>
                            Creator
                         </h3>
