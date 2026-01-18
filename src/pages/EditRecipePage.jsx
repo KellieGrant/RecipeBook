@@ -1,22 +1,26 @@
-import React from 'react';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useParams, useLoaderData, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-const AddRecipePage = ({ addRecipeSubmit }) => {
-   const [title, setTitle] = useState('');
-   const [type, setType] = useState('Breakfast');
-   const [description, setDescription] = useState('');
-   const [time, setTime] = useState('10 min');
-   const [creatorName, setCreatorName] = useState('');
-   const [creatorIngredients, setCreatorIngredients] = useState('');
+const EditRecipePage = ({ updateRecipeSubmit }) => {
+   const recipe = useLoaderData();
+   const [title, setTitle] = useState(recipe.title);
+   const [type, setType] = useState(recipe.type);
+   const [description, setDescription] = useState(recipe.description);
+   const [time, setTime] = useState(recipe.time);
+   const [creatorName, setCreatorName] = useState(recipe.creator.name);
+   const [creatorIngredients, setCreatorIngredients] = useState(
+      recipe.creator.ingredients,
+   );
 
    const navigate = useNavigate();
+   const { id } = useParams();
 
    const submitForm = e => {
       e.preventDefault();
 
-      const newRecipe = {
+      const updatedRecipe = {
+         id,
          title,
          type,
          description,
@@ -27,11 +31,11 @@ const AddRecipePage = ({ addRecipeSubmit }) => {
          },
       };
 
-      addRecipeSubmit(newRecipe);
+      updateRecipeSubmit(updatedRecipe);
 
-      toast.success('Recipe Added Successfully!');
+      toast.success('Recipe Updated Successfully!');
 
-      return navigate('/recipes');
+      return navigate(`/recipes/${id}`);
    };
 
    return (
@@ -40,7 +44,7 @@ const AddRecipePage = ({ addRecipeSubmit }) => {
             <div className='bg-light-secondary px-6 py-8 mb-4 shadow-md rounded-md border m-4 md:m-0'>
                <form onSubmit={submitForm}>
                   <h2 className='text-3xl text-center font-semibold mb-6'>
-                     Add Recipe
+                     Update Recipe
                   </h2>
 
                   <div className='mb-4'>
@@ -109,7 +113,7 @@ const AddRecipePage = ({ addRecipeSubmit }) => {
                         id='time'
                         name='time'
                         className='border rounded w-full py-2 px-3 shadow-md'
-                        requiredvalue={time}
+                        value={time}
                         onChange={e => setTime(e.target.value)}
                      >
                         <option value='10 min'>10 min</option>
@@ -141,7 +145,8 @@ const AddRecipePage = ({ addRecipeSubmit }) => {
                         name='name'
                         className='border rounded w-full py-2 px-3 shadow-md'
                         placeholder='eg. Cailee Eats'
-                        requiredvalue={creatorName}
+                        required
+                        value={creatorName}
                         onChange={e => setCreatorName(e.target.value)}
                      />
                   </div>
@@ -159,7 +164,8 @@ const AddRecipePage = ({ addRecipeSubmit }) => {
                         className='border rounded w-full py-2 px-3 shadow-md'
                         rows='4'
                         placeholder='What ingredients are needed?'
-                        requiredvalue={creatorIngredients}
+                        required
+                        value={creatorIngredients}
                         onChange={e => setCreatorIngredients(e.target.value)}
                      ></textarea>
                   </div>
@@ -169,7 +175,7 @@ const AddRecipePage = ({ addRecipeSubmit }) => {
                         className='bg-light-accent hover:bg-[#6aa16e] text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline'
                         type='submit'
                      >
-                        Add Recipe
+                        Update Recipe
                      </button>
                   </div>
                </form>
@@ -179,4 +185,4 @@ const AddRecipePage = ({ addRecipeSubmit }) => {
    );
 };
 
-export default AddRecipePage;
+export default EditRecipePage;

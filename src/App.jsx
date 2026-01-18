@@ -11,6 +11,7 @@ import RecipesPage from './pages/RecipesPage';
 import NotFoundPage from './pages/NotFoundPage';
 import RecipePage, { recipeLoader } from './pages/RecipePage';
 import AddRecipePage from './pages/AddRecipePage';
+import EditRecipePage from './pages/EditRecipePage';
 
 const App = () => {
    // Add New Recipe
@@ -27,7 +28,22 @@ const App = () => {
 
    // Delete Recipe
    const deleteRecipe = async id => {
-      console.log('delete', id);
+      const res = await fetch(`/api/recipes/${id}`, {
+         method: 'DELETE',
+      });
+      return;
+   };
+
+   // Update Recipe
+   const updateRecipe = async recipe => {
+      const res = await fetch(`/api/recipes/${recipe.id}`, {
+         method: 'PUT',
+         headers: {
+            'Content-Type': 'application/json',
+         },
+         body: JSON.stringify(recipe),
+      });
+      return;
    };
 
    const router = createBrowserRouter(
@@ -43,6 +59,11 @@ const App = () => {
             <Route
                path='/add-recipe'
                element={<AddRecipePage addRecipeSubmit={addRecipe} />}
+            />
+            <Route
+               path='/edit-recipe/:id'
+               element={<EditRecipePage updateRecipeSubmit={updateRecipe} />}
+               loader={recipeLoader}
             />
             <Route path='*' element={<NotFoundPage />} />
          </Route>,

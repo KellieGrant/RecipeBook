@@ -2,6 +2,7 @@ import React from 'react';
 import { useParams, useLoaderData, useNavigate } from 'react-router-dom';
 import { FaArrowLeft } from 'react-icons/fa6';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const RecipePage = ({ deleteRecipe }) => {
    const navigate = useNavigate();
@@ -9,13 +10,15 @@ const RecipePage = ({ deleteRecipe }) => {
    const recipe = useLoaderData();
 
    const onDeleteClick = recipeId => {
-      const conirm = window.confirm(
+      const confirm = window.confirm(
          'Are you sure you want to delete this recipe',
       );
 
       if (!confirm) return;
 
       deleteRecipe(recipeId);
+
+      toast.success('Recipe Deleted Successfully!');
 
       navigate('/recipes');
    };
@@ -61,7 +64,7 @@ const RecipePage = ({ deleteRecipe }) => {
                            Time
                         </h3>
 
-                        <p className='mb-4'>{recipe.salary}</p>
+                        <p className='mb-4'>{recipe.time}</p>
                      </div>
                   </main>
 
@@ -82,8 +85,8 @@ const RecipePage = ({ deleteRecipe }) => {
                      <div className='bg-light-secondary p-6 rounded-lg shadow-md mt-6'>
                         <h3 className='text-xl font-bold mb-6'>Manage Job</h3>
                         <Link
-                           to={`/recipes/edit/${recipe.id}`}
-                           className='bg-light-accent hover:bg-indigo-600 text-white text-center font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline mt-4 block'
+                           to={`/edit-recipe/${recipe.id}`}
+                           className='bg-light-accent hover:bg-[#6aa16e] text-white text-center font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline mt-4 block'
                         >
                            Edit Job
                         </Link>
