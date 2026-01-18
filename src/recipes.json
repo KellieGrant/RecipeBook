@@ -70,11 +70,11 @@
       "id": "b1d0",
       "title": "Cake",
       "type": "Desert",
-      "description": "test",
+      "description": "test\ntest 2\ntest3",
       "time": "3 hours",
       "creator": {
         "name": "test",
-        "ingredients": "test"
+        "ingredients": "test\ntest 2\ntest 3\ntest 4"
       }
     }
   ]

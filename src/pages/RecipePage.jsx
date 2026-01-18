@@ -45,20 +45,6 @@ const RecipePage = ({ deleteRecipe }) => {
                         <h1 className='text-3xl font-bold mb-4'>
                            {recipe.title}
                         </h1>
-                        <div className='text-gray-500 mb-4 flex align-middle justify-center md:justify-start'>
-                           <i className='fa-solid fa-location-dot text-lg text-orange-700 mr-2'></i>
-                           <p className='text-light-accent'>
-                              {recipe.location}
-                           </p>
-                        </div>
-                     </div>
-
-                     <div className='bg-light-secondary p-6 rounded-lg shadow-md mt-6'>
-                        <h3 className='text-light-accent text-lg font-bold mb-6'>
-                           Recipe Instructions
-                        </h3>
-
-                        <p className='mb-4'>{recipe.description}</p>
 
                         <h3 className='text-light-accent text-lg font-bold mb-2'>
                            Time
@@ -66,19 +52,44 @@ const RecipePage = ({ deleteRecipe }) => {
 
                         <p className='mb-4'>{recipe.time}</p>
                      </div>
+
+                     <div className='bg-light-secondary p-6 rounded-lg shadow-md mt-6'>
+                        <h3 className='text-light-accent text-xl font-bold mb-6'>
+                           Ingredients
+                        </h3>
+
+                        <ul className='lsit-disc list-inside space-y-1 my-2'>
+                           {recipe.creator.ingredients
+                              .split('\n')
+                              .filter(item => item.trim() !== '')
+                              .map((item, index) => (
+                                 <li key={index}>{item}</li>
+                              ))}
+                        </ul>
+                     </div>
                   </main>
 
                   {/* <!-- Sidebar --> */}
                   <aside>
-                     {/* <!-- Company Info --> */}
                      <div className='bg-light-secondary p-6 rounded-lg shadow-md'>
-                        <h3 className='text-xl font-bold mb-6'>Creator</h3>
+                        <h3 className='text-light-accent text-lg font-bold mb-6'>
+                           Recipe Instructions
+                        </h3>
 
-                        <p className='text-2xl mb-6'>{recipe.creator.name}</p>
+                        <ol className='list-decimal list-inside space-y-2 mb-10'>
+                           {recipe.description
+                              .split('\n')
+                              .filter(step => step.trim() !== '')
+                              .map((step, index) => (
+                                 <li key={index}>{step}</li>
+                              ))}
+                        </ol>
 
-                        <h3 className='text-xl font-bold mb-6'>Ingredients</h3>
+                        <h3 className='text-light-accent text-m font-bold mb-1'>
+                           Creator
+                        </h3>
 
-                        <p className='my-2'>{recipe.creator.ingredients}</p>
+                        <p className='text-l mb-6'>{recipe.creator.name}</p>
                      </div>
 
                      {/* <!-- Manage --> */}
