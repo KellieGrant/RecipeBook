@@ -72,7 +72,7 @@ const RecipePage = ({ deleteRecipe }) => {
                         </h3>
 
                         <ol className='list-decimal list-inside space-y-2 mb-10'>
-                           {recipe.description
+                           {recipe.instructions
                               .split('\n')
                               .filter(step => step.trim() !== '')
                               .map((step, index) => (
