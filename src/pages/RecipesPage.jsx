@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
+import SearchBar from '../components/SearchBar';
 import RecipeListings from '../components/RecipeListings';
 
 const RecipesPage = () => {
+   const [query, setQuery] = useState('');
+
    return (
       <section>
-         <RecipeListings />
+         <SearchBar query={query} onQueryChange={setQuery} />
+         <RecipeListings query={query} />
       </section>
    );
 };

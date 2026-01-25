@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import RecipeListing from './RecipeListing';
 import Spinner from './Spinner';
 
-const RecipeListings = ({ isHome = false }) => {
+const RecipeListings = ({ isHome = false, query = '' }) => {
    const [recipes, setRecipes] = useState([]);
    const [loading, setLoading] = useState(true);
 
@@ -23,6 +23,16 @@ const RecipeListings = ({ isHome = false }) => {
       fetchRecipes();
    }, []);
 
+   const normalizedQuery = query.trim().toLowerCase();
+   const queryWords = normalizedQuery.length ? normalizedQuery.split(/\s+/) : [];
+   const filteredRecipes =
+      queryWords.length === 0
+         ? recipes
+         : recipes.filter(r => {
+              const title = String(r?.title ?? '').toLowerCase();
+              return queryWords.every(word => title.includes(word));
+           });
+
    return (
       <section className='bg-light-bg px-4 py-10'>
          <div className='container-xl lg:container m-auto'>
@@ -33,11 +43,19 @@ const RecipeListings = ({ isHome = false }) => {
             {loading ? (
                <Spinner loading={loading} />
             ) : (
-               <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
-                  {recipes.map(recipe => (
-                     <RecipeListing key={recipe.id} recipe={recipe} />
-                  ))}
-               </div>
+               <>
+                  {filteredRecipes.length === 0 ? (
+                     <p className='text-center text-light-text'>
+                        No recipes found.
+                     </p>
+                  ) : (
+                     <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
+                        {filteredRecipes.map(recipe => (
+                           <RecipeListing key={recipe.id} recipe={recipe} />
+                        ))}
+                     </div>
+                  )}
+               </>
             )}
          </div>
       </section>
