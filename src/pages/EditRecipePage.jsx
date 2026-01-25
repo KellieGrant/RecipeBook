@@ -10,9 +10,12 @@ const EditRecipePage = ({ updateRecipeSubmit }) => {
       type: recipe.type ?? '',
       description: recipe.description ?? '',
       time: recipe.time ?? '',
+      imgUrl: recipe.imgUrl ?? recipe.imageUrl ?? '',
+      ingredients: recipe.ingredients ?? recipe.creator?.ingredients ?? '',
+      instructions: recipe.instructions ?? '',
       creator: {
          name: recipe.creator?.name ?? '',
-         ingredients: recipe.creator?.ingredients ?? '',
+         ingredients: recipe.ingredients ?? recipe.creator?.ingredients ?? '',
       },
    };
 
@@ -20,10 +23,10 @@ const EditRecipePage = ({ updateRecipeSubmit }) => {
    const [type, setType] = useState(norlaizedRecipe.type);
    const [description, setDescription] = useState(norlaizedRecipe.description);
    const [time, setTime] = useState(norlaizedRecipe.time);
+   const [imgUrl, setImgUrl] = useState(norlaizedRecipe.imgUrl);
    const [creatorName, setCreatorName] = useState(norlaizedRecipe.creator.name);
-   const [creatorIngredients, setCreatorIngredients] = useState(
-      norlaizedRecipe.creator.ingredients,
-   );
+   const [ingredients, setIngredients] = useState(norlaizedRecipe.ingredients);
+   const [instructions, setInstructions] = useState(norlaizedRecipe.instructions);
 
    const navigate = useNavigate();
    const { id } = useParams();
@@ -37,9 +40,16 @@ const EditRecipePage = ({ updateRecipeSubmit }) => {
          type,
          description,
          time,
+         // new schema (preferred)
+         imgUrl: imgUrl.trim() ? imgUrl.trim() : null,
+         ingredients,
+         instructions,
+
+         // backwards-compatible fields
+         imageUrl: imgUrl.trim() ? imgUrl.trim() : null,
          creator: {
             name: creatorName,
-            ingredients: creatorIngredients,
+            ingredients,
          },
       };
 
@@ -77,7 +87,7 @@ const EditRecipePage = ({ updateRecipeSubmit }) => {
                         <option value='Breakfast'>Breakfast</option>
                         <option value='Lunch'>Lunch</option>
                         <option value='Dinner'>Dinner</option>
-                        <option value='Desert'>Desert</option>
+                        <option value='Dessert'>Dessert</option>
                      </select>
                   </div>
 
@@ -101,14 +111,14 @@ const EditRecipePage = ({ updateRecipeSubmit }) => {
                         htmlFor='description'
                         className='block text-gray-700 font-bold mb-2'
                      >
-                        Instructions
+                        Description
                      </label>
                      <textarea
                         id='description'
                         name='description'
                         className='border rounded w-full py-2 px-3 shadow-md'
                         rows='4'
-                        placeholder='How do you make this recipe?'
+                        placeholder='Short description of the recipe'
                         value={description}
                         onChange={e => setDescription(e.target.value)}
                      ></textarea>
@@ -116,7 +126,25 @@ const EditRecipePage = ({ updateRecipeSubmit }) => {
 
                   <div className='mb-4'>
                      <label
-                        htmlFor='type'
+                        htmlFor='imgUrl'
+                        className='block text-gray-700 font-bold mb-2'
+                     >
+                        Image URL (optional)
+                     </label>
+                     <input
+                        type='url'
+                        id='imgUrl'
+                        name='imgUrl'
+                        className='border rounded w-full py-2 px-3 mb-2 shadow-md'
+                        placeholder='https://...'
+                        value={imgUrl}
+                        onChange={e => setImgUrl(e.target.value)}
+                     />
+                  </div>
+
+                  <div className='mb-4'>
+                     <label
+                        htmlFor='time'
                         className='block text-gray-700 font-bold mb-2'
                      >
                         Time
@@ -165,7 +193,7 @@ const EditRecipePage = ({ updateRecipeSubmit }) => {
 
                   <div className='mb-4'>
                      <label
-                        htmlFor='creator_ingredients'
+                        htmlFor='ingredients'
                         className='block text-gray-700 font-bold mb-2'
                      >
                         Ingredients
@@ -177,8 +205,27 @@ const EditRecipePage = ({ updateRecipeSubmit }) => {
                         rows='4'
                         placeholder='What ingredients are needed?'
                         required
-                        value={creatorIngredients}
-                        onChange={e => setCreatorIngredients(e.target.value)}
+                        value={ingredients}
+                        onChange={e => setIngredients(e.target.value)}
+                     ></textarea>
+                  </div>
+
+                  <div className='mb-4'>
+                     <label
+                        htmlFor='instructions'
+                        className='block text-gray-700 font-bold mb-2'
+                     >
+                        Instructions
+                     </label>
+                     <textarea
+                        id='instructions'
+                        name='instructions'
+                        className='border rounded w-full py-2 px-3 shadow-md'
+                        rows='6'
+                        placeholder='Step-by-step instructions'
+                        required
+                        value={instructions}
+                        onChange={e => setInstructions(e.target.value)}
                      ></textarea>
                   </div>
 

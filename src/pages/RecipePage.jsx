@@ -59,7 +59,7 @@ const RecipePage = ({ deleteRecipe }) => {
                         </h3>
 
                         <ul className='lsit-disc list-inside space-y-1 my-2'>
-                           {recipe.creator.ingredients
+                           {recipe?.creator?.ingredients
                               .split('\n')
                               .filter(item => item.trim() !== '')
                               .map((item, index) => (
@@ -72,8 +72,7 @@ const RecipePage = ({ deleteRecipe }) => {
                         </h3>
 
                         <ol className='list-decimal list-inside space-y-2 mb-10'>
-                           {recipe.instructions
-                              .split('\n')
+                           {recipe?.instructions?.split('\n')
                               .filter(step => step.trim() !== '')
                               .map((step, index) => (
                                  <li key={index}>{step}</li>
