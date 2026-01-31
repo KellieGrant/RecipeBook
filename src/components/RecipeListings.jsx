@@ -9,10 +9,13 @@ const RecipeListings = ({ isHome = false, query = '', filters = {} }) => {
 
    useEffect(() => {
       const fetchRecipes = async () => {
-         const apiUrl = isHome ? '/api/recipes?_limit=3' : '/api/recipes';
+         const apiUrl = isHome
+            ? 'http://localhost:5000/recipes?_limit=3'
+            : 'http://localhost:5000/recipes';
          try {
             const res = await fetch(apiUrl);
             const data = await res.json();
+            console.log('Fetched recipes:', data);
             setRecipes(data);
          } catch (error) {
             console.log('Error fetching data', error);
@@ -159,14 +162,18 @@ const RecipeListings = ({ isHome = false, query = '', filters = {} }) => {
    };
 
    const normalizedQuery = query.trim().toLowerCase();
-   const queryWords = normalizedQuery.length ? normalizedQuery.split(/\s+/) : [];
+   const queryWords = normalizedQuery.length
+      ? normalizedQuery.split(/\s+/)
+      : [];
    const maxTimeMinutesRaw = filters?.maxTimeMinutes ?? '';
    const maxTimeMinutes =
       maxTimeMinutesRaw === '' || maxTimeMinutesRaw === null
          ? null
          : Number(maxTimeMinutesRaw);
    const selectedMealTypes = new Set(filters?.mealTypes ?? []);
-   const availableIngredients = String(filters?.availableIngredients ?? '').trim();
+   const availableIngredients = String(
+      filters?.availableIngredients ?? '',
+   ).trim();
    const allowedMissingIngredients = Number(
       filters?.allowedMissingIngredients ?? 0,
    );
@@ -176,29 +183,35 @@ const RecipeListings = ({ isHome = false, query = '', filters = {} }) => {
          ? buildAvailableKeywordSet(availableIngredients)
          : null;
 
-   const filteredRecipes = recipes.filter(r => {
-      const title = String(r?.title ?? '').toLowerCase();
-      if (queryWords.length && !queryWords.every(word => title.includes(word)))
-         return false;
+   const filteredRecipes = Array.isArray(recipes)
+      ? recipes.filter(r => {
+           const title = String(r?.title ?? '').toLowerCase();
+           if (
+              queryWords.length &&
+              !queryWords.every(word => title.includes(word))
+           )
+              return false;
 
-      if (selectedMealTypes.size > 0 && !selectedMealTypes.has(r?.type))
-         return false;
+           if (selectedMealTypes.size > 0 && !selectedMealTypes.has(r?.type))
+              return false;
 
-      if (maxTimeMinutes !== null && !Number.isNaN(maxTimeMinutes)) {
-         const recipeMins = parseTimeToMinutes(r?.time);
-         if (recipeMins !== null && recipeMins > maxTimeMinutes) return false;
-      }
+           if (maxTimeMinutes !== null && !Number.isNaN(maxTimeMinutes)) {
+              const recipeMins = parseTimeToMinutes(r?.time);
+              if (recipeMins !== null && recipeMins > maxTimeMinutes)
+                 return false;
+           }
 
-      if (availableKeywords) {
-         const missing = countMissingIngredientLines(
-            r?.creator?.ingredients,
-            availableKeywords,
-         );
-         if (missing > allowedMissingIngredients) return false;
-      }
+           if (availableKeywords) {
+              const missing = countMissingIngredientLines(
+                 r?.creator?.ingredients,
+                 availableKeywords,
+              );
+              if (missing > allowedMissingIngredients) return false;
+           }
 
-      return true;
-   });
+           return true;
+        })
+      : [];
 
    return (
       <section className='bg-light-bg px-4 py-10'>
