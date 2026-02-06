@@ -41,23 +41,23 @@ const AddRecipePage = ({ addRecipeSubmit }) => {
   };
 
   return (
-    <section className="bg-light-bg">
+    <section className="bg-light-bg dark:bg-dark-bg">
       <div className="container m-auto max-w-2xl py-24">
-        <div className="bg-light-secondary px-6 py-8 mb-4 shadow-md rounded-md border m-4 md:m-0">
+        <div className="bg-light-secondary dark:bg-dark-surface px-6 py-8 mb-4 shadow-md rounded-md border dark:border-dark-muted m-4 md:m-0">
           <form onSubmit={submitForm}>
-            <h2 className="text-3xl text-center font-semibold mb-6">
+            <h2 className="text-3xl text-center font-semibold mb-6 text-gray-900 dark:text-dark-text">
               Add Recipe
             </h2>
 
             {/* Meal Type */}
             <div className="mb-4">
-              <label htmlFor="type" className="block text-gray-700 font-bold mb-2">
+              <label htmlFor="type" className="block text-gray-700 dark:text-dark-text font-bold mb-2">
                 Meal Type
               </label>
               <select
                 id="type"
                 name="type"
-                className="border rounded w-full py-2 px-3 shadow-md"
+                className="border dark:border-dark-muted bg-white dark:bg-dark-bg dark:text-dark-text rounded w-full py-2 px-3 shadow-md"
                 required
                 value={type}
                 onChange={e => setType(e.target.value)}
@@ -94,7 +94,7 @@ const AddRecipePage = ({ addRecipeSubmit }) => {
               <select
                 id="time"
                 name="time"
-                className="border rounded w-full py-2 px-3 shadow-md"
+                className="border dark:border-dark-muted bg-white dark:bg-dark-bg dark:text-dark-text rounded w-full py-2 px-3 shadow-md"
                 required
                 value={time}
                 onChange={e => setTime(e.target.value)}
@@ -115,7 +115,7 @@ const AddRecipePage = ({ addRecipeSubmit }) => {
 
             {/* Image URL */}
             <div className="mb-4">
-              <label htmlFor="imgUrl" className="block text-gray-700 font-bold mb-2">
+              <label htmlFor="imgUrl" className="block text-gray-700 dark:text-dark-text font-bold mb-2">
                 Image URL (optional)
               </label>
               <input
@@ -133,14 +133,14 @@ const AddRecipePage = ({ addRecipeSubmit }) => {
             <h3 className="text-2xl mb-5">Recipe Info</h3>
 
             <div className="mb-4">
-              <label htmlFor="creator_name" className="block text-gray-700 font-bold mb-2">
+              <label htmlFor="creator_name" className="block text-gray-700 dark:text-dark-text font-bold mb-2">
                 Creator Name
               </label>
               <input
                 type="text"
                 id="creator_name"
                 name="creator_name"
-                className="border rounded w-full py-2 px-3 shadow-md"
+                className="border dark:border-dark-muted bg-white dark:bg-dark-bg dark:text-dark-text rounded w-full py-2 px-3 shadow-md"
                 placeholder="eg. Cailee Eats"
                 required
                 value={creatorName}
@@ -149,13 +149,13 @@ const AddRecipePage = ({ addRecipeSubmit }) => {
             </div>
 
             <div className="mb-4">
-              <label htmlFor="ingredients" className="block text-gray-700 font-bold mb-2">
+              <label htmlFor="ingredients" className="block text-gray-700 dark:text-dark-text font-bold mb-2">
                 Ingredients
               </label>
               <textarea
                 id="ingredients"
                 name="ingredients"
-                className="border rounded w-full py-2 px-3 shadow-md"
+                className="border dark:border-dark-muted bg-white dark:bg-dark-bg dark:text-dark-text rounded w-full py-2 px-3 shadow-md"
                 rows="4"
                 placeholder="List ingredients, one per line"
                 required
@@ -165,13 +165,13 @@ const AddRecipePage = ({ addRecipeSubmit }) => {
             </div>
 
             <div className="mb-4">
-              <label htmlFor="description" className="block text-gray-700 font-bold mb-2">
+              <label htmlFor="description" className="block text-gray-700 dark:text-dark-text font-bold mb-2">
                 Description
               </label>
               <textarea
                 id="description"
                 name="description"
-                className="border rounded w-full py-2 px-3 shadow-md"
+                className="border dark:border-dark-muted bg-white dark:bg-dark-bg dark:text-dark-text rounded w-full py-2 px-3 shadow-md"
                 rows="3"
                 placeholder="Short description of the recipe"
                 required
@@ -181,13 +181,13 @@ const AddRecipePage = ({ addRecipeSubmit }) => {
             </div>
 
             <div className="mb-4">
-              <label htmlFor="instructions" className="block text-gray-700 font-bold mb-2">
+              <label htmlFor="instructions" className="block text-gray-700 dark:text-dark-text font-bold mb-2">
                 Instructions
               </label>
               <textarea
                 id="instructions"
                 name="instructions"
-                className="border rounded w-full py-2 px-3 shadow-md"
+                className="border dark:border-dark-muted bg-white dark:bg-dark-bg dark:text-dark-text rounded w-full py-2 px-3 shadow-md"
                 rows="6"
                 placeholder="Step-by-step instructions"
                 required
@@ -199,7 +199,7 @@ const AddRecipePage = ({ addRecipeSubmit }) => {
             <div>
               <button
                 type="submit"
-                className="bg-light-accent hover:bg-[#6aa16e] text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline"
+                className="bg-light-accent dark:bg-dark-accent hover:bg-[#6aa16e] dark:hover:opacity-90 text-white dark:text-dark-bg font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline"
               >
                 Add Recipe
               </button>

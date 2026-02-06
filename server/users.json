@@ -1,0 +1,15 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "test123",
+      "passwordHash": "$2b$10$m2glfOeEcSPK5MtVuLAbC.KPpjAt9OEytF5qweYKlciQd.haTQdaG"
+    },
+    {
+      "id": 2,
+      "username": "kelta",
+      "passwordHash": "$2b$10$2ogUYzFSnp/Kpt6OP8XOYe0ngZp4w5P.k7fWufnfRXscefj/jLxoW"
+    }
+  ],
+  "nextUserId": 3
+}

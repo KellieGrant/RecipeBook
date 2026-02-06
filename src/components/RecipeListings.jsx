@@ -1,30 +1,39 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import RecipeListing from './RecipeListing';
 import Spinner from './Spinner';
+import { useAuth } from '../contexts/AuthContext';
+import { getAuthHeaders } from '../utils/auth';
 
 const RecipeListings = ({ isHome = false, query = '', filters = {} }) => {
    const [recipes, setRecipes] = useState([]);
    const [loading, setLoading] = useState(true);
+   const { isAuthenticated } = useAuth();
 
    useEffect(() => {
       const fetchRecipes = async () => {
+         if (!isAuthenticated) {
+            setLoading(false);
+            return;
+         }
          const apiUrl = isHome
-            ? 'http://localhost:5000/recipes?_limit=3'
-            : 'http://localhost:5000/recipes';
+            ? '/api/recipes?_limit=3'
+            : '/api/recipes';
          try {
-            const res = await fetch(apiUrl);
+            const res = await fetch(apiUrl, { headers: getAuthHeaders() });
+            if (!res.ok) throw new Error('Failed to fetch');
             const data = await res.json();
-            console.log('Fetched recipes:', data);
-            setRecipes(data);
+            setRecipes(Array.isArray(data) ? data : []);
          } catch (error) {
             console.log('Error fetching data', error);
+            setRecipes([]);
          } finally {
             setLoading(false);
          }
       };
       fetchRecipes();
-   }, [isHome]);
+   }, [isHome, isAuthenticated]);
 
    const parseTimeToMinutes = timeValue => {
       if (!timeValue) return null;
@@ -213,11 +222,32 @@ const RecipeListings = ({ isHome = false, query = '', filters = {} }) => {
         })
       : [];
 
+   if (!isAuthenticated) {
+      return (
+         <section className='bg-light-bg px-4 py-10'>
+            <div className='container-xl lg:container m-auto text-center'>
+               <h2 className='text-3xl font-bold text-light-text mb-4'>
+                  Your Recipes
+               </h2>
+               <p className='text-gray-600 dark:text-dark-muted mb-4'>
+                  Log in to view and manage your recipes.
+               </p>
+               <Link
+                  to='/login'
+                  className='inline-block bg-light-accent dark:bg-dark-accent hover:bg-[#6aa16e] dark:hover:opacity-90 text-white dark:text-dark-bg font-bold py-2 px-6 rounded-full'
+               >
+                  Log In
+               </Link>
+            </div>
+         </section>
+      );
+   }
+
    return (
-      <section className='bg-light-bg px-4 py-10'>
+      <section className='bg-light-bg dark:bg-dark-bg px-4 py-10'>
          <div className='container-xl lg:container m-auto'>
             <h2 className='text-3xl font-bold text-light-text mb-6 text-center'>
-               {isHome ? 'Recent Recipes' : 'Browse Recipes'}
+               {isHome ? 'Recent Recipes' : 'My Recipes'}
             </h2>
 
             {loading ? (
@@ -225,7 +255,7 @@ const RecipeListings = ({ isHome = false, query = '', filters = {} }) => {
             ) : (
                <>
                   {filteredRecipes.length === 0 ? (
-                     <p className='text-center text-light-text'>
+                     <p className='text-center text-light-text dark:text-dark-muted'>
                         No recipes found.
                      </p>
                   ) : (

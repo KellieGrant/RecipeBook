@@ -1,7 +1,7 @@
 {
   "recipes": [
     {
-      "id": "1",
+      "id": 1,
       "title": "Hearty Veggie Stir-Fry",
       "type": "Dinner",
       "time": "30 minutes",
@@ -14,7 +14,7 @@
       "instructions": "Heat olive oil in a large skillet over medium heat.\nAdd garlic and sauté for 30 seconds.\nAdd bell pepper, broccoli, carrot, and snap peas.\nStir-fry vegetables for 5–7 minutes until tender-crisp.\nAdd soy sauce and sesame oil, stir to coat.\nServe immediately over cooked rice or noodles."
     },
     {
-      "id": "2",
+      "id": 2,
       "title": "Classic Breakfast Scramble",
       "type": "Breakfast",
       "time": "15 minutes",
@@ -27,7 +27,7 @@
       "instructions": "Melt butter in a skillet over medium heat.\nAdd onion and bell pepper and sauté until soft.\nBeat the eggs in a bowl and season with salt and pepper.\nPour eggs into the skillet and stir continuously until cooked.\nAdd cheese or herbs if desired.\nServe hot."
     },
     {
-      "id": "3",
+      "id": 3,
       "title": "Creamy Tomato Pasta",
       "type": "Dinner",
       "time": "25 minutes",
@@ -40,7 +40,7 @@
       "instructions": "Cook pasta according to package instructions and drain.\nHeat olive oil in a skillet over medium heat.\nAdd garlic and sauté for 1 minute.\nPour in crushed tomatoes and simmer for 5 minutes.\nStir in heavy cream and season with salt and pepper.\nAdd cooked pasta and toss to coat.\nServe with grated parmesan if desired."
     },
     {
-      "id": "4",
+      "id": 4,
       "title": "Fresh Chicken Wraps",
       "type": "Lunch",
       "time": "20 minutes",
@@ -53,7 +53,7 @@
       "instructions": "Lay out the tortilla wraps.\nSpread mayonnaise or yogurt sauce evenly on each wrap.\nPlace lettuce, tomato slices, and chicken on the wraps.\nSeason with salt and pepper.\nRoll up the wraps tightly.\nCut in half and serve."
     },
     {
-      "id": "5",
+      "id": 5,
       "title": "Loaded Beef Chili",
       "type": "Dinner",
       "time": "1 hour",
@@ -66,7 +66,7 @@
       "instructions": "Cook ground beef in a large pot over medium heat until browned.\nAdd onion and garlic and cook until softened.\nStir in diced tomatoes, kidney beans, and chili powder.\nSimmer on low heat for 30–40 minutes, stirring occasionally.\nSeason with salt and pepper.\nServe hot, optionally with shredded cheese or sour cream."
     },
     {
-      "id": "6",
+      "id": 6,
       "title": "Baked Lemon Salmon",
       "type": "Dinner",
       "time": "25 minutes",
@@ -79,30 +79,36 @@
       "instructions": "Preheat oven to 400°F (200°C).\nPlace salmon fillets on a baking sheet lined with parchment paper.\nDrizzle olive oil over salmon and season with salt and pepper.\nTop with lemon slices and fresh herbs if desired.\nBake for 12–15 minutes until salmon is cooked through.\nServe immediately."
     },
     {
-      "id": "21c1",
-      "title": "Chicken Noodle soup",
+      "title": "Bacon & Eggs",
       "type": "Breakfast",
-      "description": "test",
-      "time": "10 min",
+      "time": "20 min",
+      "imgUrl": "https://www.allrecipes.com/thmb/uM6ilYePGwOYvrzRydiG-KcEfjc=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/6347204-heart-attack-eggs-Sumirechan-4x3-1-a1cbe5d8dba14e268e79264411fc60fc.jpg",
+      "ingredients": "Bacon\nEggs\nToast\nHashbrowns",
+      "description": "A classic breakfast for any occasion.",
+      "imageUrl": "https://www.allrecipes.com/thmb/uM6ilYePGwOYvrzRydiG-KcEfjc=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/6347204-heart-attack-eggs-Sumirechan-4x3-1-a1cbe5d8dba14e268e79264411fc60fc.jpg",
       "creator": {
-        "name": "test",
-        "ingredients": "test"
-      }
+        "name": "Test",
+        "ingredients": "Bacon\nEggs\nToast\nHashbrowns"
+      },
+      "instructions": "Cook bacon in a pan or griddle. Once done, keep warm in oven at low temperature in an oven safe pan.\nOnce bacon is done cooking, add hashbrowns to the pan/griddle that you cooked the bacon in.  Continue stirring them until warm and crispy.\nCook eggs to your liking.\nWhile eggs are cooking put toast down.\nServe and enjoy",
+      "id": 7,
+      "userId": 1
     },
     {
-      "id": "4145",
       "title": "Chicken Noodle Soup",
       "type": "Dinner",
       "time": "2 hours",
-      "imgUrl": "https://www.recipetineats.com/tachyon/2017/05/Chicken-Noodle-Soup-from-scratch_3.jpg?resize=900%2C1260&zoom=0.72",
-      "ingredients": "Test1\ntest2\ntest3\ntes4",
-      "description": "A hearty filling chicken noodle soup for a cold winter day, or when you are sick.",
-      "imageUrl": "https://www.recipetineats.com/tachyon/2017/05/Chicken-Noodle-Soup-from-scratch_3.jpg?resize=900%2C1260&zoom=0.72",
+      "imgUrl": null,
+      "ingredients": "jkjnaskljdf\nlkjjsdfalf\nljkajkdshf\nlkjjkadfshb",
+      "description": "kjlhdsfa\nlkjadsfjhf\nlkjadsjhkf\nlkjahdsf\nljadshfl\n",
+      "imageUrl": null,
       "creator": {
-        "name": "Test",
-        "ingredients": "Test1\ntest2\ntest3\ntes4"
+        "name": "test",
+        "ingredients": "jkjnaskljdf\nlkjjsdfalf\nljkajkdshf\nlkjjkadfshb"
       },
-      "instructions": "Test1\ntest2\ntest3\ntes4"
+      "instructions": "ujhsdafjkhasdljkfhasdf\nljkahdsflj\n;ljhadf\njkahdsf\nkjhdsal4\nikoljhasd;f\nj;kadsfj",
+      "id": 8,
+      "userId": 2
     }
   ]
 }

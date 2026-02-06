@@ -6,13 +6,13 @@ import { FaFilter } from 'react-icons/fa6';
 
 const SearchBar = ({ query = '', onQueryChange, onOpenFilters }) => {
    return (
-      <section className='bg-light-accent py-10 mb-4'>
+      <section className='bg-light-accent dark:bg-dark-accent py-10 mb-4'>
          <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center'>
             <div className='text-center'>
-               <h1 className='text-4xl font-extrabold text-white sm:text-5xl md:text-6xl'>
+               <h1 className='text-4xl font-extrabold text-white dark:text-dark-bg sm:text-5xl md:text-6xl'>
                   Find Your Recipe
                </h1>
-               <p className='my-4 text-xl text-light-secondary'>
+               <p className='my-4 text-xl text-light-secondary dark:text-dark-bg/80'>
                   Stop flipping to an earmarked page. Just search it!
                </p>
                <TextField
