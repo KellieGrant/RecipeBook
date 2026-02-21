@@ -9,7 +9,12 @@
       "id": 2,
       "username": "kelta",
       "passwordHash": "$2b$10$2ogUYzFSnp/Kpt6OP8XOYe0ngZp4w5P.k7fWufnfRXscefj/jLxoW"
+    },
+    {
+      "id": 3,
+      "username": "kgrant325i@hotmail.com",
+      "passwordHash": "$2b$10$KIAfwrm0QOujExlXmcWEsuixuap9KYgOHSZr.PI5BwxcbWhl6KIk6"
     }
   ],
-  "nextUserId": 3
+  "nextUserId": 4
 }

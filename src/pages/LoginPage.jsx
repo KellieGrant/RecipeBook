@@ -34,11 +34,11 @@ const LoginPage = () => {
    };
 
    return (
-      <section className='bg-light-bg dark:bg-dark-bg min-h-[70vh] flex items-center justify-center py-12'>
-         <div className='bg-light-secondary dark:bg-dark-surface px-8 py-10 rounded-lg shadow-md max-w-md w-full mx-4 border border-transparent dark:border-dark-muted'>
-            <h2 className='text-2xl font-bold text-center mb-6 text-gray-900 dark:text-dark-text'>Log In</h2>
+      <section className='bg-light-bg dark:bg-dark-bg flex items-center justify-center py-4'>
+         <div className='bg-light-secondary dark:bg-dark-surface px-5 py-6 rounded-lg shadow-md max-w-md w-full mx-3 border border-transparent dark:border-dark-muted'>
+            <h2 className='text-xl font-bold text-center mb-4 text-gray-900 dark:text-dark-text'>Log In</h2>
             <form onSubmit={handleSubmit}>
-               <div className='mb-4'>
+               <div className='mb-3'>
                   <label
                      htmlFor='username'
                      className='block text-gray-700 dark:text-dark-text font-bold mb-2'
@@ -55,7 +55,7 @@ const LoginPage = () => {
                      autoComplete='username'
                   />
                </div>
-               <div className='mb-6'>
+               <div className='mb-4'>
                   <label
                      htmlFor='password'
                      className='block text-gray-700 dark:text-dark-text font-bold mb-2'
@@ -80,7 +80,7 @@ const LoginPage = () => {
                   {loading ? 'Logging in...' : 'Log In'}
                </button>
             </form>
-            <p className='mt-4 text-center text-gray-600 dark:text-dark-muted'>
+            <p className='mt-3 text-center text-sm text-gray-600 dark:text-dark-muted'>
                Don&apos;t have an account?{' '}
                <Link to='/register' className='text-light-accent dark:text-dark-accent font-bold hover:underline'>
                   Register

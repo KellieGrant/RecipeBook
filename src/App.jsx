@@ -13,6 +13,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import NotFoundPage from './pages/NotFoundPage';
 import RecipePage, { recipeLoader } from './pages/RecipePage';
+import RecipeErrorPage from './pages/RecipeErrorPage';
 import AddRecipePage from './pages/AddRecipePage';
 import EditRecipePage from './pages/EditRecipePage';
 import { useAuth } from './contexts/AuthContext';
@@ -64,12 +65,14 @@ const AppContent = () => {
                   path='recipes/:id'
                   element={<RecipePage deleteRecipe={deleteRecipe} />}
                   loader={recipeLoader}
+                  errorElement={<RecipeErrorPage />}
                />
                <Route path='add-recipe' element={<AddRecipePage addRecipeSubmit={addRecipe} />} />
                <Route
                   path='edit-recipe/:id'
                   element={<EditRecipePage updateRecipeSubmit={updateRecipe} />}
                   loader={recipeLoader}
+                  errorElement={<RecipeErrorPage />}
                />
             </Route>
             <Route path='*' element={<NotFoundPage />} />

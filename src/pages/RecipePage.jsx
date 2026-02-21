@@ -24,7 +24,7 @@ const RecipePage = ({ deleteRecipe }) => {
 
          navigate('/recipes');
       } catch (err) {
-         console.error('Failed to delte recipe:', err);
+         console.error('Failed to delete recipe:', err);
          toast.error('Failed to delete recipe');
       }
    };

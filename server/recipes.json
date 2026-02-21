@@ -11,7 +11,8 @@
         "ingredients": "1 tbsp olive oil\n1 bell pepper, sliced\n1 cup broccoli florets\n1 carrot, julienned\n1 cup snap peas\n2 cloves garlic, minced\n2 tbsp soy sauce\n1 tsp sesame oil\nCooked rice or noodles (to serve)"
       },
       "description": "A quick and colorful vegetable stir-fry packed with fresh veggies and simple Asian-inspired flavors.",
-      "instructions": "Heat olive oil in a large skillet over medium heat.\nAdd garlic and sauté for 30 seconds.\nAdd bell pepper, broccoli, carrot, and snap peas.\nStir-fry vegetables for 5–7 minutes until tender-crisp.\nAdd soy sauce and sesame oil, stir to coat.\nServe immediately over cooked rice or noodles."
+      "instructions": "Heat olive oil in a large skillet over medium heat.\nAdd garlic and sauté for 30 seconds.\nAdd bell pepper, broccoli, carrot, and snap peas.\nStir-fry vegetables for 5–7 minutes until tender-crisp.\nAdd soy sauce and sesame oil, stir to coat.\nServe immediately over cooked rice or noodles.",
+      "userId": 1
     },
     {
       "id": 2,
@@ -24,7 +25,8 @@
         "ingredients": "3 eggs\n1 tbsp butter\n¼ cup diced onion\n¼ cup diced bell pepper\nSalt and pepper to taste\nOptional: shredded cheese or fresh herbs"
       },
       "description": "A simple, comforting breakfast scramble that’s quick to make and easy to customize.",
-      "instructions": "Melt butter in a skillet over medium heat.\nAdd onion and bell pepper and sauté until soft.\nBeat the eggs in a bowl and season with salt and pepper.\nPour eggs into the skillet and stir continuously until cooked.\nAdd cheese or herbs if desired.\nServe hot."
+      "instructions": "Melt butter in a skillet over medium heat.\nAdd onion and bell pepper and sauté until soft.\nBeat the eggs in a bowl and season with salt and pepper.\nPour eggs into the skillet and stir continuously until cooked.\nAdd cheese or herbs if desired.\nServe hot.",
+      "userId": 1
     },
     {
       "id": 3,
@@ -37,7 +39,8 @@
         "ingredients": "250g pasta (penne or spaghetti)\n1 tbsp olive oil\n2 cloves garlic, minced\n1 cup crushed tomatoes\n½ cup heavy cream\nSalt and pepper to taste\nGrated parmesan (optional)"
       },
       "description": "A rich yet simple pasta dish combining tangy tomatoes with a smooth, creamy sauce.",
-      "instructions": "Cook pasta according to package instructions and drain.\nHeat olive oil in a skillet over medium heat.\nAdd garlic and sauté for 1 minute.\nPour in crushed tomatoes and simmer for 5 minutes.\nStir in heavy cream and season with salt and pepper.\nAdd cooked pasta and toss to coat.\nServe with grated parmesan if desired."
+      "instructions": "Cook pasta according to package instructions and drain.\nHeat olive oil in a skillet over medium heat.\nAdd garlic and sauté for 1 minute.\nPour in crushed tomatoes and simmer for 5 minutes.\nStir in heavy cream and season with salt and pepper.\nAdd cooked pasta and toss to coat.\nServe with grated parmesan if desired.",
+      "userId": 1
     },
     {
       "id": 4,
@@ -50,7 +53,8 @@
         "ingredients": "2 cooked chicken breasts, sliced\n4 tortilla wraps\nLettuce, shredded\nTomato, sliced\n¼ cup mayonnaise or yogurt sauce\nSalt and pepper to taste"
       },
       "description": "Light and satisfying chicken wraps filled with fresh vegetables and a creamy sauce.",
-      "instructions": "Lay out the tortilla wraps.\nSpread mayonnaise or yogurt sauce evenly on each wrap.\nPlace lettuce, tomato slices, and chicken on the wraps.\nSeason with salt and pepper.\nRoll up the wraps tightly.\nCut in half and serve."
+      "instructions": "Lay out the tortilla wraps.\nSpread mayonnaise or yogurt sauce evenly on each wrap.\nPlace lettuce, tomato slices, and chicken on the wraps.\nSeason with salt and pepper.\nRoll up the wraps tightly.\nCut in half and serve.",
+      "userId": 1
     },
     {
       "id": 5,
@@ -63,7 +67,8 @@
         "ingredients": "1 lb ground beef\n1 can kidney beans, drained\n1 can diced tomatoes\n1 small onion, diced\n2 cloves garlic, minced\n1 tbsp chili powder\nSalt and pepper to taste"
       },
       "description": "A hearty, comforting beef chili that’s rich, filling, and perfect for cooler days.",
-      "instructions": "Cook ground beef in a large pot over medium heat until browned.\nAdd onion and garlic and cook until softened.\nStir in diced tomatoes, kidney beans, and chili powder.\nSimmer on low heat for 30–40 minutes, stirring occasionally.\nSeason with salt and pepper.\nServe hot, optionally with shredded cheese or sour cream."
+      "instructions": "Cook ground beef in a large pot over medium heat until browned.\nAdd onion and garlic and cook until softened.\nStir in diced tomatoes, kidney beans, and chili powder.\nSimmer on low heat for 30–40 minutes, stirring occasionally.\nSeason with salt and pepper.\nServe hot, optionally with shredded cheese or sour cream.",
+      "userId": 1
     },
     {
       "id": 6,
@@ -76,22 +81,7 @@
         "ingredients": "2 salmon fillets\n1 lemon, sliced\n1 tbsp olive oil\nSalt and pepper to taste\nFresh dill or parsley (optional)"
       },
       "description": "A light and flavorful salmon dish with fresh lemon and herbs, baked to perfection.",
-      "instructions": "Preheat oven to 400°F (200°C).\nPlace salmon fillets on a baking sheet lined with parchment paper.\nDrizzle olive oil over salmon and season with salt and pepper.\nTop with lemon slices and fresh herbs if desired.\nBake for 12–15 minutes until salmon is cooked through.\nServe immediately."
-    },
-    {
-      "title": "Bacon & Eggs",
-      "type": "Breakfast",
-      "time": "20 min",
-      "imgUrl": "https://www.allrecipes.com/thmb/uM6ilYePGwOYvrzRydiG-KcEfjc=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/6347204-heart-attack-eggs-Sumirechan-4x3-1-a1cbe5d8dba14e268e79264411fc60fc.jpg",
-      "ingredients": "Bacon\nEggs\nToast\nHashbrowns",
-      "description": "A classic breakfast for any occasion.",
-      "imageUrl": "https://www.allrecipes.com/thmb/uM6ilYePGwOYvrzRydiG-KcEfjc=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/6347204-heart-attack-eggs-Sumirechan-4x3-1-a1cbe5d8dba14e268e79264411fc60fc.jpg",
-      "creator": {
-        "name": "Test",
-        "ingredients": "Bacon\nEggs\nToast\nHashbrowns"
-      },
-      "instructions": "Cook bacon in a pan or griddle. Once done, keep warm in oven at low temperature in an oven safe pan.\nOnce bacon is done cooking, add hashbrowns to the pan/griddle that you cooked the bacon in.  Continue stirring them until warm and crispy.\nCook eggs to your liking.\nWhile eggs are cooking put toast down.\nServe and enjoy",
-      "id": 7,
+      "instructions": "Preheat oven to 400°F (200°C).\nPlace salmon fillets on a baking sheet lined with parchment paper.\nDrizzle olive oil over salmon and season with salt and pepper.\nTop with lemon slices and fresh herbs if desired.\nBake for 12–15 minutes until salmon is cooked through.\nServe immediately.",
       "userId": 1
     },
     {

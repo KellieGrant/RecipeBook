@@ -8,10 +8,18 @@ const jwt = require('jsonwebtoken');
 const recipes = require('./recipes.json');
 const usersData = require('./users.json');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+let JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+   if (process.env.NODE_ENV === 'production') {
+      throw new Error('JWT_SECRET must be set in production');
+   }
+   JWT_SECRET = 'dev-secret-change-in-production';
+}
 const usersPath = path.join(__dirname, 'users.json');
 
 const app = express();
+const apiRouter = express.Router();
+
 app.use(cors());
 app.use(express.json());
 
@@ -42,12 +50,9 @@ const authMiddleware = (req, res, next) => {
    }
 };
 
-app.get('/', (req, res) => {
-   res.send('Backend is running');
-});
-
+// ---------- API routes (mounted at /api so frontend can use /api/... in dev and production) ----------
 // POST /auth/register - Create new user
-app.post('/auth/register', async (req, res) => {
+apiRouter.post('/auth/register', async (req, res) => {
    const { username, password } = req.body;
    if (!username || !password) {
       return res.status(400).json({ error: 'Username and password required' });
@@ -84,7 +89,7 @@ app.post('/auth/register', async (req, res) => {
 });
 
 // POST /auth/login - Login user
-app.post('/auth/login', async (req, res) => {
+apiRouter.post('/auth/login', async (req, res) => {
    const { username, password } = req.body;
    if (!username || !password) {
       return res.status(400).json({ error: 'Username and password required' });
@@ -114,7 +119,7 @@ app.post('/auth/login', async (req, res) => {
 });
 
 // All recipe routes below require authentication
-app.get('/recipes', authMiddleware, (req, res) => {
+apiRouter.get('/recipes', authMiddleware, (req, res) => {
    const userId = req.user.id;
    let userRecipes = recipes.recipes.filter(r => (r.userId ?? null) === userId);
    const limit = parseInt(req.query._limit, 10);
@@ -124,7 +129,7 @@ app.get('/recipes', authMiddleware, (req, res) => {
    res.json(userRecipes);
 });
 
-app.get('/recipes/:id', authMiddleware, (req, res) => {
+apiRouter.get('/recipes/:id', authMiddleware, (req, res) => {
    const { id } = req.params;
    const userId = req.user.id;
    const recipe = recipes.recipes.find(r => r.id.toString() === id);
@@ -140,7 +145,7 @@ app.get('/recipes/:id', authMiddleware, (req, res) => {
 });
 
 // POST - Add new recipe (requires auth)
-app.post('/recipes', authMiddleware, (req, res) => {
+apiRouter.post('/recipes', authMiddleware, (req, res) => {
    const userId = req.user.id;
    const newRecipe = req.body;
 
@@ -161,7 +166,7 @@ app.post('/recipes', authMiddleware, (req, res) => {
 });
 
 // DELETE a recipe by id
-app.delete('/recipes/:id', authMiddleware, (req, res) => {
+apiRouter.delete('/recipes/:id', authMiddleware, (req, res) => {
    const { id } = req.params;
    const userId = req.user.id;
 
@@ -189,7 +194,7 @@ app.delete('/recipes/:id', authMiddleware, (req, res) => {
 });
 
 // PUT (update) a recipe by id
-app.put('/recipes/:id', authMiddleware, (req, res) => {
+apiRouter.put('/recipes/:id', authMiddleware, (req, res) => {
    const { id } = req.params;
    const userId = req.user.id;
    const updates = req.body;
@@ -220,6 +225,22 @@ app.put('/recipes/:id', authMiddleware, (req, res) => {
    res.json(recipes.recipes[index]);
 });
 
-app.listen(5000, () => {
-   console.log('Server listening on port 5000');
+app.use('/api', apiRouter);
+
+// Production: serve built React app from same origin so /api works without CORS/config
+if (process.env.NODE_ENV === 'production') {
+   const distPath = path.join(__dirname, '..', 'dist');
+   app.use(express.static(distPath));
+   app.get('*', (req, res) => {
+      res.sendFile(path.join(distPath, 'index.html'));
+   });
+} else {
+   app.get('/', (req, res) => {
+      res.send('Backend is running');
+   });
+}
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+   console.log(`Server listening on port ${PORT}`);
 });

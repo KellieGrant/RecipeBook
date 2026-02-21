@@ -71,14 +71,14 @@ const AddRecipePage = ({ addRecipeSubmit }) => {
 
             {/* Recipe Name */}
             <div className="mb-4">
-              <label htmlFor="title" className="block text-gray-700 font-bold mb-2">
+              <label htmlFor="title" className="block text-gray-700 dark:text-dark-text font-bold mb-2">
                 Recipe Name
               </label>
               <input
                 type="text"
                 id="title"
                 name="title"
-                className="border rounded w-full py-2 px-3 mb-2 shadow-md"
+                className="border dark:border-dark-muted bg-white dark:bg-dark-bg dark:text-dark-text rounded w-full py-2 px-3 mb-2 shadow-md"
                 placeholder="eg. Chicken Noodle Soup"
                 required
                 value={title}
@@ -88,7 +88,7 @@ const AddRecipePage = ({ addRecipeSubmit }) => {
 
             {/* Time */}
             <div className="mb-4">
-              <label htmlFor="time" className="block text-gray-700 font-bold mb-2">
+              <label htmlFor="time" className="block text-gray-700 dark:text-dark-text font-bold mb-2">
                 Time
               </label>
               <select
@@ -122,7 +122,7 @@ const AddRecipePage = ({ addRecipeSubmit }) => {
                 type="url"
                 id="imgUrl"
                 name="imgUrl"
-                className="border rounded w-full py-2 px-3 mb-2 shadow-md"
+                className="border dark:border-dark-muted bg-white dark:bg-dark-bg dark:text-dark-text rounded w-full py-2 px-3 mb-2 shadow-md"
                 placeholder="https://..."
                 value={imgUrl}
                 onChange={e => setImgUrl(e.target.value)}
@@ -130,7 +130,7 @@ const AddRecipePage = ({ addRecipeSubmit }) => {
             </div>
 
             {/* Creator Info */}
-            <h3 className="text-2xl mb-5">Recipe Info</h3>
+            <h3 className="text-2xl mb-5 text-gray-900 dark:text-dark-text">Recipe Info</h3>
 
             <div className="mb-4">
               <label htmlFor="creator_name" className="block text-gray-700 dark:text-dark-text font-bold mb-2">
