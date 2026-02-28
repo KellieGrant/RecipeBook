@@ -228,17 +228,9 @@ apiRouter.put('/recipes/:id', authMiddleware, (req, res) => {
 app.use('/api', apiRouter);
 
 // Production: serve built React app from same origin so /api works without CORS/config
-if (process.env.NODE_ENV === 'production') {
-   const distPath = path.join(__dirname, '..', 'dist');
-   app.use(express.static(distPath));
-   app.get('/*', (req, res) => {
-      res.sendFile(path.join(distPath, 'index.html'));
-   });
-} else {
-   app.get('/', (req, res) => {
-      res.send('Backend is running');
-   });
-}
+app.get('/', (req, res) => {
+   res.send('Backend is running');
+});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
