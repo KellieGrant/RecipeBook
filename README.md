@@ -60,6 +60,15 @@ The app is set up so **one service** serves both the React app and the API. That
 
 No frontend changes are required: the app uses `/api` for requests, and in production the server handles both `/api/*` and the static React build from one origin.
 
+## Mobile app (install on your phone)
+
+The app is a **Progressive Web App (PWA)**. You can use it in the browser on a computer to add and edit recipes, and **install it on your phone** to follow recipes in the kitchen.
+
+- **Android (Chrome):** Open the app URL in Chrome → menu (⋮) → “Install app” or “Add to Home screen.” Or use the install banner when it appears.
+- **iPhone/iPad (Safari):** Open the app URL in Safari → Share → “Add to Home Screen.”
+
+After installing, the app opens in its own window (no browser UI) and can work offline for viewing already-loaded recipes. Use the same account on web and on the installed app.
+
 ## Test / demo
 
 - **Register** a new account or use an existing one.
