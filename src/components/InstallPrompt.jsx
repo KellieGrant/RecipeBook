@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaTimes } from 'react-icons/fa6';
-
+import { FaXmark } from 'react-icons/fa6';
 const DISMISS_KEY = 'recipebook_install_dismissed';
 
 const isIOS = () =>
@@ -86,7 +85,7 @@ const InstallPrompt = () => {
                   className='p-1 rounded hover:bg-white/20'
                   aria-label='Dismiss'
                >
-                  <FaTimes className='text-lg' />
+                  <FaXmark className='text-lg' />
                </button>
             </div>
          </div>
