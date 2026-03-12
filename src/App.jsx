@@ -17,12 +17,13 @@ import RecipeErrorPage from './pages/RecipeErrorPage';
 import AddRecipePage from './pages/AddRecipePage';
 import EditRecipePage from './pages/EditRecipePage';
 import { useAuth } from './contexts/AuthContext';
+import { apiUrl } from './config';
 
 const AppContent = () => {
    const { getAuthHeaders } = useAuth();
 
    const addRecipe = async newRecipe => {
-      const res = await fetch('/api/recipes', {
+      const res = await fetch(apiUrl('/api/recipes'), {
          method: 'POST',
          headers: {
             'Content-Type': 'application/json',
@@ -34,7 +35,7 @@ const AppContent = () => {
    };
 
    const deleteRecipe = async id => {
-      const res = await fetch(`/api/recipes/${id}`, {
+      const res = await fetch(apiUrl(`/api/recipes/${id}`), {
          method: 'DELETE',
          headers: getAuthHeaders(),
       });
@@ -42,7 +43,7 @@ const AppContent = () => {
    };
 
    const updateRecipe = async recipe => {
-      const res = await fetch(`/api/recipes/${recipe.id}`, {
+      const res = await fetch(apiUrl(`/api/recipes/${recipe.id}`), {
          method: 'PUT',
          headers: {
             'Content-Type': 'application/json',

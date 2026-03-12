@@ -4,6 +4,7 @@ import { FaArrowLeft } from 'react-icons/fa6';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { getAuthHeaders } from '../utils/auth';
+import { apiUrl } from '../config';
 
 const RecipePage = ({ deleteRecipe }) => {
    const navigate = useNavigate();
@@ -136,7 +137,7 @@ const RecipePage = ({ deleteRecipe }) => {
 
 const recipeLoader = async ({ params }) => {
    try {
-      const res = await fetch(`/api/recipes/${params.id}`, {
+      const res = await fetch(apiUrl(`/api/recipes/${params.id}`), {
          headers: getAuthHeaders(),
       });
       if (!res.ok) {

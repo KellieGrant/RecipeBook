@@ -5,6 +5,7 @@ import RecipeListing from './RecipeListing';
 import Spinner from './Spinner';
 import { useAuth } from '../contexts/AuthContext';
 import { getAuthHeaders } from '../utils/auth';
+import { apiUrl } from '../config';
 
 const RecipeListings = ({ isHome = false, query = '', filters = {} }) => {
    const [recipes, setRecipes] = useState([]);
@@ -17,11 +18,11 @@ const RecipeListings = ({ isHome = false, query = '', filters = {} }) => {
             setLoading(false);
             return;
          }
-         const apiUrl = isHome
+         const endpoint = isHome
             ? '/api/recipes?_limit=3'
             : '/api/recipes';
          try {
-            const res = await fetch(apiUrl, { headers: getAuthHeaders() });
+            const res = await fetch(apiUrl(endpoint), { headers: getAuthHeaders() });
             if (!res.ok) throw new Error('Failed to fetch');
             const data = await res.json();
             setRecipes(Array.isArray(data) ? data : []);
