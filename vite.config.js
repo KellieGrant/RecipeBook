@@ -8,7 +8,7 @@ export default defineConfig({
       react(),
       VitePWA({
          registerType: 'autoUpdate',
-         includeAssets: ['vite.svg'],
+         includeAssets: ['logo.png'],
          manifest: {
             name: 'Recipe Book',
             short_name: 'Recipe Book',
@@ -19,7 +19,8 @@ export default defineConfig({
             start_url: '/',
             scope: '/',
             icons: [
-               { src: '/vite.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any' },
+               { src: '/logo.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+               { src: '/logo.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
             ],
          },
          workbox: {
