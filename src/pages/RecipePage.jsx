@@ -60,7 +60,9 @@ const RecipePage = ({ deleteRecipe }) => {
                <div className='grid grid-cols-1 md:grid-cols-70/30 w-full gap-6'>
                   <main>
                      <div className='bg-light-secondary dark:bg-dark-surface p-6 rounded-lg shadow-md text-center md:text-left border border-transparent dark:border-dark-muted'>
-                        <div className='text-gray-500 dark:text-dark-muted mb-4'>{recipe.type}</div>
+                        <div className='text-gray-500 dark:text-dark-muted mb-4'>
+                           {recipe.type}
+                        </div>
                         <h1 className='text-3xl font-bold mb-4'>
                            {recipe.title}
                         </h1>
@@ -113,7 +115,9 @@ const RecipePage = ({ deleteRecipe }) => {
 
                      {/* <!-- Manage --> */}
                      <div className='bg-light-secondary dark:bg-dark-surface p-6 rounded-lg shadow-md mt-6 border border-transparent dark:border-dark-muted'>
-                        <h3 className='text-xl font-bold mb-6'>Manage Job</h3>
+                        <h3 className='text-xl font-bold mb-6'>
+                           Manage Recipe
+                        </h3>
                         <Link
                            to={`/edit-recipe/${recipe.id}`}
                            className='bg-light-accent dark:bg-dark-accent hover:bg-[#6aa16e] dark:hover:opacity-90 text-white dark:text-dark-bg text-center font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline mt-4 block'
