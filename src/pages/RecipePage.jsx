@@ -115,7 +115,7 @@ const RecipePage = ({ deleteRecipe }) => {
                               >
                                  <input
                                     type='checkbox'
-                                    className='mt-1 h-4 w-4 rounded border-gray-300 text-light-accent focus:ring-light-accent dark:border-dark-muted dark:bg-dark-bg dark:focus:ring-dark-accent'
+                                    className='mt-1 h-4 w-4 rounded border-light-accent accent-light-accent focus:ring-light-accent dark:border-dark-accent dark:accent-dark-accent dark:bg-dark-bg dark:focus:ring-dark-accent'
                                     checked={checkedIngredients[index] || false}
                                     onChange={() => toggleIngredient(index)}
                                  />
@@ -144,7 +144,7 @@ const RecipePage = ({ deleteRecipe }) => {
                               >
                                  <input
                                     type='checkbox'
-                                    className='mt-1 h-4 w-4 rounded border-gray-300 text-light-accent focus:ring-light-accent dark:border-dark-muted dark:bg-dark-bg dark:focus:ring-dark-accent'
+                                    className='mt-1 h-4 w-4 rounded border-light-accent accent-light-accent focus:ring-light-accent dark:border-dark-accent dark:accent-dark-accent dark:bg-dark-bg dark:focus:ring-dark-accent'
                                     checked={checkedSteps[index] || false}
                                     onChange={() => toggleStep(index)}
                                  />
