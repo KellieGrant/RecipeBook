@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, useLoaderData, useNavigate } from 'react-router-dom';
 import { FaArrowLeft } from 'react-icons/fa6';
 import { Link } from 'react-router-dom';
@@ -10,6 +10,34 @@ const RecipePage = ({ deleteRecipe }) => {
    const navigate = useNavigate();
    const { id } = useParams();
    const recipe = useLoaderData();
+
+   const ingredientLines =
+      recipe?.creator?.ingredients
+         ?.split('\n')
+         .filter(item => item.trim() !== '') || [];
+
+   const instructionSteps =
+      recipe?.instructions
+         ?.split('\n')
+         .filter(step => step.trim() !== '') || [];
+
+   const [checkedIngredients, setCheckedIngredients] = useState(
+      () => ingredientLines.map(() => false),
+   );
+
+   const [checkedSteps, setCheckedSteps] = useState(
+      () => instructionSteps.map(() => false),
+   );
+
+   const toggleIngredient = index => {
+      setCheckedIngredients(prev =>
+         prev.map((val, i) => (i === index ? !val : val)),
+      );
+   };
+
+   const toggleStep = index => {
+      setCheckedSteps(prev => prev.map((val, i) => (i === index ? !val : val)));
+   };
 
    const onDeleteClick = async recipeId => {
       const confirmDelete = window.confirm(
@@ -79,26 +107,63 @@ const RecipePage = ({ deleteRecipe }) => {
                            Ingredients
                         </h3>
 
-                        <ul className='list-disc list-inside space-y-1 my-2'>
-                           {recipe?.creator?.ingredients
-                              .split('\n')
-                              .filter(item => item.trim() !== '')
-                              .map((item, index) => (
-                                 <li key={index}>{item}</li>
-                              ))}
+                        <ul className='space-y-2 my-2'>
+                           {ingredientLines.map((item, index) => (
+                              <li
+                                 key={index}
+                                 className='flex items-start gap-2 text-left'
+                              >
+                                 <input
+                                    type='checkbox'
+                                    className='mt-1 h-4 w-4 rounded border-gray-300 text-light-accent focus:ring-light-accent dark:border-dark-muted dark:bg-dark-bg dark:focus:ring-dark-accent'
+                                    checked={checkedIngredients[index] || false}
+                                    onChange={() => toggleIngredient(index)}
+                                 />
+                                 <span
+                                    className={
+                                       checkedIngredients[index]
+                                          ? 'line-through text-gray-400 dark:text-dark-muted'
+                                          : ''
+                                    }
+                                 >
+                                    {item}
+                                 </span>
+                              </li>
+                           ))}
                         </ul>
 
                         <h3 className='text-light-accent dark:text-dark-accent text-lg font-bold mb-6'>
                            Recipe Instructions
                         </h3>
 
-                        <ol className='list-decimal list-inside space-y-2 mb-10'>
-                           {recipe?.instructions
-                              ?.split('\n')
-                              .filter(step => step.trim() !== '')
-                              .map((step, index) => (
-                                 <li key={index}>{step}</li>
-                              ))}
+                        <ol className='space-y-3 mb-10'>
+                           {instructionSteps.map((step, index) => (
+                              <li
+                                 key={index}
+                                 className='flex items-start gap-3 text-left'
+                              >
+                                 <input
+                                    type='checkbox'
+                                    className='mt-1 h-4 w-4 rounded border-gray-300 text-light-accent focus:ring-light-accent dark:border-dark-muted dark:bg-dark-bg dark:focus:ring-dark-accent'
+                                    checked={checkedSteps[index] || false}
+                                    onChange={() => toggleStep(index)}
+                                 />
+                                 <div>
+                                    <span className='mr-2 font-semibold'>
+                                       {index + 1}.
+                                    </span>
+                                    <span
+                                       className={
+                                          checkedSteps[index]
+                                             ? 'line-through text-gray-400 dark:text-dark-muted'
+                                             : ''
+                                       }
+                                    >
+                                       {step}
+                                    </span>
+                                 </div>
+                              </li>
+                           ))}
                         </ol>
                      </div>
                   </main>
