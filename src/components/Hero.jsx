@@ -19,7 +19,7 @@ const Hero = () => {
             </h1>
 
             <p className='mt-4 max-w-2xl text-base sm:text-lg md:text-xl text-light-text dark:text-dark-muted'>
-               Save your favourites, plan dinner in minutes, and cook with step‑by‑step checklists that keep you on track.
+            Because “I swear I saved that recipe somewhere” isn’t a system.
             </p>
 
             <div className='mt-8 flex flex-col sm:flex-row items-center justify-center gap-4'>

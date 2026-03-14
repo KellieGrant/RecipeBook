@@ -17,7 +17,7 @@ const SearchBar = ({ query = '', onQueryChange, onOpenFilters }) => {
                      My recipes
                   </h1>
                   <p className='mt-2 text-sm sm:text-base text-light-text dark:text-dark-muted'>
-                     Search across your saved dishes and quickly filter by time or meal.
+                  Your ancestors flipped pages so you don’t have to.
                   </p>
                </div>
                <TextField
