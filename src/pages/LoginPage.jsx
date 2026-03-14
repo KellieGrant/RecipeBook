@@ -35,58 +35,71 @@ const LoginPage = () => {
    };
 
    return (
-      <section className='bg-light-bg dark:bg-dark-bg flex items-center justify-center py-4'>
-         <div className='bg-light-secondary dark:bg-dark-surface px-5 py-6 rounded-lg shadow-md max-w-md w-full mx-3 border border-transparent dark:border-dark-muted'>
-            <h2 className='text-xl font-bold text-center mb-4 text-gray-900 dark:text-dark-text'>Log In</h2>
-            <form onSubmit={handleSubmit}>
-               <div className='mb-3'>
-                  <label
-                     htmlFor='username'
-                     className='block text-gray-700 dark:text-dark-text font-bold mb-2'
-                  >
-                     Username
-                  </label>
-                  <input
-                     type='text'
-                     id='username'
-                     className='border dark:border-dark-muted bg-white dark:bg-dark-bg dark:text-dark-text rounded w-full py-2 px-3 shadow-md'
-                     value={username}
-                     onChange={e => setUsername(e.target.value)}
-                     required
-                     autoComplete='username'
-                  />
+      <section className='bg-gradient-to-br from-light-bg via-white to-light-secondary dark:from-dark-bg dark:via-dark-surface dark:to-dark-secondary min-h-[80vh] flex items-center justify-center py-10'>
+         <div className='max-w-md w-full mx-4'>
+            <div className='bg-white/85 dark:bg-dark-surface/95 backdrop-blur-sm px-7 py-8 rounded-2xl shadow-xl border border-light-border/70 dark:border-dark-muted/80'>
+               <div className='mb-6 text-center'>
+                  <h2 className='text-2xl md:text-3xl font-heading font-extrabold text-dark-surface dark:text-dark-text'>
+                     Welcome back
+                  </h2>
+                  <p className='mt-2 text-sm text-light-text dark:text-dark-muted'>
+                     Log in to access your saved recipes and cooking checklists.
+                  </p>
                </div>
-               <div className='mb-4'>
-                  <label
-                     htmlFor='password'
-                     className='block text-gray-700 dark:text-dark-text font-bold mb-2'
+
+               <form onSubmit={handleSubmit} className='space-y-4'>
+                  <div>
+                     <label
+                        htmlFor='username'
+                        className='block text-xs font-semibold uppercase tracking-wide text-light-text dark:text-dark-muted mb-2'
+                     >
+                        Username
+                     </label>
+                     <input
+                        type='text'
+                        id='username'
+                        className='w-full rounded-xl border border-light-border/80 dark:border-dark-muted/80 bg-white dark:bg-dark-bg/60 dark:text-dark-text px-3 py-2.5 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-light-accent/60 dark:focus:ring-dark-accent/70'
+                        value={username}
+                        onChange={e => setUsername(e.target.value)}
+                        required
+                        autoComplete='username'
+                     />
+                  </div>
+                  <div>
+                     <label
+                        htmlFor='password'
+                        className='block text-xs font-semibold uppercase tracking-wide text-light-text dark:text-dark-muted mb-2'
+                     >
+                        Password
+                     </label>
+                     <input
+                        type='password'
+                        id='password'
+                        className='w-full rounded-xl border border-light-border/80 dark:border-dark-muted/80 bg-white dark:bg-dark-bg/60 dark:text-dark-text px-3 py-2.5 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-light-accent/60 dark:focus:ring-dark-accent/70'
+                        value={password}
+                        onChange={e => setPassword(e.target.value)}
+                        required
+                        autoComplete='current-password'
+                     />
+                  </div>
+                  <button
+                     type='submit'
+                     disabled={loading}
+                     className='inline-flex w-full items-center justify-center rounded-full bg-light-accent dark:bg-dark-accent text-black dark:text-dark-bg px-6 py-3 text-sm font-semibold shadow-md hover:shadow-lg hover:-translate-y-0.5 hover:bg-[#6aa16e] dark:hover:opacity-90 transition-transform transition-shadow duration-150 focus:outline-none focus:ring-2 focus:ring-light-accent/70 dark:focus:ring-dark-accent/70 disabled:opacity-70'
                   >
-                     Password
-                  </label>
-                  <input
-                     type='password'
-                     id='password'
-                     className='border dark:border-dark-muted bg-white dark:bg-dark-bg dark:text-dark-text rounded w-full py-2 px-3 shadow-md'
-                     value={password}
-                     onChange={e => setPassword(e.target.value)}
-                     required
-                     autoComplete='current-password'
-                  />
-               </div>
-               <button
-                  type='submit'
-                  disabled={loading}
-                  className='bg-light-accent hover:bg-[#6aa16e] text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline disabled:opacity-70'
-               >
-                  {loading ? 'Logging in...' : 'Log In'}
-               </button>
-            </form>
-            <p className='mt-3 text-center text-sm text-gray-600 dark:text-dark-muted'>
-               Don&apos;t have an account?{' '}
-               <Link to='/register' className='text-light-accent dark:text-dark-accent font-bold hover:underline'>
-                  Register
-               </Link>
-            </p>
+                     {loading ? 'Logging in...' : 'Log in'}
+                  </button>
+               </form>
+               <p className='mt-4 text-center text-sm text-light-text dark:text-dark-muted'>
+                  Don&apos;t have an account?{' '}
+                  <Link
+                     to='/register'
+                     className='text-light-accent dark:text-dark-accent font-semibold hover:underline'
+                  >
+                     Create one
+                  </Link>
+               </p>
+            </div>
          </div>
       </section>
    );

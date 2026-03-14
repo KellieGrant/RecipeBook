@@ -13,7 +13,7 @@ const RecipeListing = ({ recipe }) => {
 
    return (
       <>
-         <div className='bg-white/70 dark:bg-dark-surface rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-transform transition-shadow duration-150 relative border border-light-border/40 dark:border-dark-muted/70 backdrop-blur-sm overflow-hidden'>
+         <div className='bg-white/70 dark:bg-dark-surface rounded-2xl shadow-md relative border border-light-border/40 dark:border-dark-muted/70 backdrop-blur-sm overflow-hidden'>
             <div className='p-5 flex flex-col h-full'>
                <div className='mb-4'>
                   <div className='inline-flex px-3 py-1 rounded-full bg-light-accent/15 text-xs font-semibold uppercase tracking-wide text-light-text dark:text-dark-muted my-1'>
