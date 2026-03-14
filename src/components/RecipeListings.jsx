@@ -245,7 +245,7 @@ const RecipeListings = ({ isHome = false, query = '', filters = {} }) => {
    }
 
    return (
-      <section className='bg-light-bg dark:bg-dark-bg px-4 py-10'>
+      <section id='recipes' className='bg-light-bg dark:bg-dark-bg px-4 py-10'>
          <div className='container-xl lg:container m-auto'>
             <h2 className='text-3xl font-bold text-light-text mb-6 text-center'>
                {isHome ? 'Recent Recipes' : 'My Recipes'}

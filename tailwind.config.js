@@ -13,20 +13,20 @@ module.exports = {
       },
       colors: {
         // Light Mode
-        'light-bg': '#F9FAFB',
-        'light-surface': '#bcb5a4ff',
-        'light-accent': '#7BAE7F',
-        'light-secondary': '#F2E9E4',
-        'light-text': '#6B7280',
-        'light-border': '#949084ff',
+        'light-bg': '#F5F5F4',        // warm neutral background
+        'light-surface': '#FFFFFF',    // main cards/surfaces
+        'light-accent': '#7BAE7F',     // primary green
+        'light-secondary': '#EDE9FE',  // subtle lilac secondary accent
+        'light-text': '#374151',       // strong neutral text
+        'light-border': '#D4D4D8',     // soft neutral border
 
         // Dark Mode
-        'dark-bg': '#1C1C1C',
-        'dark-surface': '#3F3F3F',
-        'dark-accent': '#A8E6A2',
-        'dark-secondary': '#E0CFC2',
-        'dark-text': '#F3F4F6',
-        'dark-muted': '#9CA3AF',
+        'dark-bg': '#020617',          // near-black slate
+        'dark-surface': '#111827',     // primary surface
+        'dark-accent': '#A8E6A2',      // soft green accent
+        'dark-secondary': '#312E81',   // deep indigo secondary
+        'dark-text': '#E5E7EB',        // light neutral text
+        'dark-muted': '#9CA3AF',       // muted/secondary text
       },
     },
   },

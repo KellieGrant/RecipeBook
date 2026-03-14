@@ -62,52 +62,70 @@ const RecipePage = ({ deleteRecipe }) => {
 
    return (
       <>
-         <section>
-            <div className='bg-light-accent dark:bg-dark-accent w-full py-6 px-6'>
+         <section className='bg-light-bg dark:bg-dark-bg border-b border-light-border/40 dark:border-dark-muted/60'>
+            <div className='container m-auto py-4 px-6 flex items-center justify-between gap-4'>
                <Link
                   to='/recipes'
-                  className='text-black dark:text-dark-bg hover:font-bold flex items-center'
+                  className='inline-flex items-center text-sm font-semibold text-light-text dark:text-dark-muted hover:text-dark-surface dark:hover:text-dark-text transition-colors'
                >
                   <FaArrowLeft className='mr-2' /> Back to Recipes
                </Link>
+               <span className='inline-flex items-center rounded-full bg-light-accent/20 dark:bg-dark-accent/20 px-3 py-1 text-xs font-medium text-light-accent dark:text-dark-accent'>
+                  {recipe.type}
+               </span>
             </div>
          </section>
 
-         {imageUrl && (
-            <section className='w-full h-48 md:h-64 overflow-hidden'>
-               <img
-                  src={imageUrl}
-                  alt={recipe.title}
-                  className='w-full h-full object-cover'
-               />
-            </section>
-         )}
-
          <section className='bg-light-bg dark:bg-dark-bg'>
-            <div className='container m-auto py-10 px-6'>
-               <div className='grid grid-cols-1 md:grid-cols-70/30 w-full gap-6'>
+            <div className='container m-auto py-8 md:py-12 px-6'>
+               <div className='grid grid-cols-1 md:grid-cols-70/30 w-full gap-8 items-start'>
                   <main>
-                     <div className='bg-light-secondary dark:bg-dark-surface p-6 rounded-lg shadow-md text-center md:text-left border border-transparent dark:border-dark-muted'>
-                        <div className='text-gray-500 dark:text-dark-muted mb-4'>
-                           {recipe.type}
+                     <div className='bg-white/80 dark:bg-dark-surface rounded-2xl shadow-md border border-light-border/40 dark:border-dark-muted/70 overflow-hidden backdrop-blur-sm mb-6'>
+                        {imageUrl && (
+                           <div className='relative h-56 md:h-72 overflow-hidden'>
+                              <img
+                                 src={imageUrl}
+                                 alt={recipe.title}
+                                 className='w-full h-full object-cover'
+                              />
+                              <div className='absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent' />
+                              <div className='absolute bottom-4 left-4 right-4 flex flex-col md:flex-row md:items-end md:justify-between gap-3'>
+                                 <div>
+                                    <h1 className='text-2xl md:text-3xl lg:text-4xl font-heading font-extrabold text-white drop-shadow'>
+                                       {recipe.title}
+                                    </h1>
+                                 </div>
+                                 <div className='flex flex-wrap gap-2'>
+                                    <span className='inline-flex items-center rounded-full bg-white/85 text-xs font-semibold text-dark-surface px-3 py-1'>
+                                       {recipe.time}
+                                    </span>
+                                 </div>
+                              </div>
+                           </div>
+                        )}
+                        {!imageUrl && (
+                           <div className='px-6 pt-6'>
+                              <h1 className='text-3xl md:text-4xl font-heading font-extrabold text-dark-surface dark:text-dark-text mb-2'>
+                                 {recipe.title}
+                              </h1>
+                              <p className='text-sm text-light-text dark:text-dark-muted mb-4'>
+                                 {recipe.type} • {recipe.time}
+                              </p>
+                           </div>
+                        )}
+                        <div className='px-6 pb-6 pt-4'>
+                           <p className='text-sm text-light-text dark:text-dark-muted'>
+                              Cook with confidence using the interactive checklist below. Tick off ingredients and steps as you go.
+                           </p>
                         </div>
-                        <h1 className='text-3xl font-bold mb-4'>
-                           {recipe.title}
-                        </h1>
-
-                        <h3 className='text-light-accent dark:text-dark-accent text-lg font-bold mb-2'>
-                           Time
-                        </h3>
-
-                        <p className='mb-4'>{recipe.time}</p>
                      </div>
 
-                     <div className='bg-light-secondary dark:bg-dark-surface p-6 rounded-lg shadow-md mt-6 border border-transparent dark:border-dark-muted'>
+                     <div className='bg-white/80 dark:bg-dark-surface p-6 rounded-2xl shadow-md border border-light-border/40 dark:border-dark-muted/70 backdrop-blur-sm'>
                         <h3 className='text-light-accent dark:text-dark-accent text-xl font-bold mb-6'>
                            Ingredients
                         </h3>
 
-                        <ul className='space-y-2 my-2'>
+                        <ul className='space-y-3 my-2'>
                            {ingredientLines.map((item, index) => (
                               <li
                                  key={index}
@@ -120,11 +138,11 @@ const RecipePage = ({ deleteRecipe }) => {
                                     onChange={() => toggleIngredient(index)}
                                  />
                                  <span
-                                    className={
+                                    className={`text-sm ${
                                        checkedIngredients[index]
                                           ? 'line-through text-gray-400 dark:text-dark-muted'
-                                          : ''
-                                    }
+                                          : 'text-dark-surface dark:text-dark-text'
+                                    }`}
                                  >
                                     {item}
                                  </span>
@@ -136,7 +154,7 @@ const RecipePage = ({ deleteRecipe }) => {
                            Recipe Instructions
                         </h3>
 
-                        <ol className='space-y-3 mb-10'>
+                        <ol className='space-y-3 mb-4'>
                            {instructionSteps.map((step, index) => (
                               <li
                                  key={index}
@@ -149,15 +167,15 @@ const RecipePage = ({ deleteRecipe }) => {
                                     onChange={() => toggleStep(index)}
                                  />
                                  <div>
-                                    <span className='mr-2 font-semibold'>
+                                    <span className='mr-2 font-semibold text-xs md:text-sm text-light-text dark:text-dark-muted'>
                                        {index + 1}.
                                     </span>
                                     <span
-                                       className={
+                                       className={`text-sm ${
                                           checkedSteps[index]
                                              ? 'line-through text-gray-400 dark:text-dark-muted'
-                                             : ''
-                                       }
+                                             : 'text-dark-surface dark:text-dark-text'
+                                       }`}
                                     >
                                        {step}
                                     </span>
@@ -169,29 +187,34 @@ const RecipePage = ({ deleteRecipe }) => {
                   </main>
 
                   {/* <!-- Sidebar --> */}
-                  <aside>
-                     <div className='bg-light-secondary dark:bg-dark-surface p-6 rounded-lg shadow-md border border-transparent dark:border-dark-muted'>
+                  <aside className='space-y-6'>
+                     <div className='bg-white/80 dark:bg-dark-surface p-6 rounded-2xl shadow-md border border-light-border/40 dark:border-dark-muted/70 backdrop-blur-sm'>
                         <h3 className='text-light-accent dark:text-dark-accent text-m font-bold mb-1'>
                            Creator
                         </h3>
 
-                        <p className='text-l mb-6'>{recipe.creator.name}</p>
+                        <p className='text-base text-dark-surface dark:text-dark-text mb-2'>
+                           {recipe.creator.name}
+                        </p>
+                        <p className='text-xs text-light-text dark:text-dark-muted'>
+                           Thanks to this creator for sharing their recipe.
+                        </p>
                      </div>
 
                      {/* <!-- Manage --> */}
-                     <div className='bg-light-secondary dark:bg-dark-surface p-6 rounded-lg shadow-md mt-6 border border-transparent dark:border-dark-muted'>
+                     <div className='bg-white/80 dark:bg-dark-surface p-6 rounded-2xl shadow-md border border-light-border/40 dark:border-dark-muted/70 backdrop-blur-sm space-y-3'>
                         <h3 className='text-xl font-bold mb-6'>
                            Manage Recipe
                         </h3>
                         <Link
                            to={`/edit-recipe/${recipe.id}`}
-                           className='bg-light-accent dark:bg-dark-accent hover:bg-[#6aa16e] dark:hover:opacity-90 text-white dark:text-dark-bg text-center font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline mt-4 block'
+                           className='bg-light-accent dark:bg-dark-accent hover:bg-[#6aa16e] dark:hover:opacity-90 text-black dark:text-dark-bg text-center font-semibold py-2.5 px-4 rounded-full w-full focus:outline-none focus:ring-2 focus:ring-light-accent/70 dark:focus:ring-dark-accent/70 mt-2 block shadow-sm hover:shadow-md transition-shadow'
                         >
                            Edit Recipe
                         </Link>
                         <button
                            onClick={() => onDeleteClick(recipe.id)}
-                           className='bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline mt-4 block dark:bg-red-600 dark:hover:bg-red-700'
+                           className='bg-red-500 hover:bg-red-600 text-white font-semibold py-2.5 px-4 rounded-full w-full focus:outline-none focus:ring-2 focus:ring-red-400/70 mt-1 block dark:bg-red-600 dark:hover:bg-red-700 shadow-sm hover:shadow-md transition-shadow'
                         >
                            Delete Recipe
                         </button>
