@@ -1,12 +1,8 @@
 const express = require('express');
 const cors = require('cors');
-const fs = require('fs');
-const path = require('path');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-
-const recipes = require('./recipes.json');
-const usersData = require('./users.json');
+const { Pool } = require('pg');
 
 let JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) {
@@ -15,24 +11,18 @@ if (!JWT_SECRET) {
    }
    JWT_SECRET = 'dev-secret-change-in-production';
 }
-const usersPath = path.join(__dirname, 'users.json');
+
+// ---------- Postgres connection (Supabase) ----------
+const pool = new Pool({
+   connectionString: process.env.DATABASE_URL,
+   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+});
 
 const app = express();
 const apiRouter = express.Router();
 
 app.use(cors());
 app.use(express.json());
-
-// Helper: read users from file (to get latest after changes)
-const readUsers = () => {
-   const raw = fs.readFileSync(usersPath, 'utf8');
-   return JSON.parse(raw);
-};
-
-// Helper: write users to file
-const writeUsers = data => {
-   fs.writeFileSync(usersPath, JSON.stringify(data, null, 2));
-};
 
 // Auth middleware: verify JWT and attach user to req
 const authMiddleware = (req, res, next) => {
@@ -61,31 +51,41 @@ apiRouter.post('/auth/register', async (req, res) => {
       return res.status(400).json({ error: 'Password must be at least 6 characters' });
    }
 
-   const data = readUsers();
-   const exists = data.users.some(u => u.username.toLowerCase() === username.toLowerCase());
-   if (exists) {
-      return res.status(400).json({ error: 'Username already taken' });
+   try {
+      const client = await pool.connect();
+      try {
+         const existing = await client.query(
+            'SELECT id FROM users WHERE LOWER(username) = LOWER($1)',
+            [username],
+         );
+         if (existing.rows.length > 0) {
+            return res.status(400).json({ error: 'Username already taken' });
+         }
+
+         const hash = await bcrypt.hash(password, 10);
+         const insertResult = await client.query(
+            'INSERT INTO users (username, password_hash) VALUES ($1, $2) RETURNING id, username',
+            [username.trim(), hash],
+         );
+         const user = insertResult.rows[0];
+
+         const token = jwt.sign(
+            { id: user.id, username: user.username },
+            JWT_SECRET,
+            { expiresIn: '7d' },
+         );
+
+         return res.status(201).json({
+            token,
+            user,
+         });
+      } finally {
+         client.release();
+      }
+   } catch (err) {
+      console.error('Register error', err);
+      return res.status(500).json({ error: 'Internal server error' });
    }
-
-   const hash = await bcrypt.hash(password, 10);
-   const user = {
-      id: data.nextUserId++,
-      username: username.trim(),
-      passwordHash: hash,
-   };
-   data.users.push(user);
-   writeUsers(data);
-
-   const token = jwt.sign(
-      { id: user.id, username: user.username },
-      JWT_SECRET,
-      { expiresIn: '7d' }
-   );
-
-   res.status(201).json({
-      token,
-      user: { id: user.id, username: user.username },
-   });
 });
 
 // POST /auth/login - Login user
@@ -95,134 +95,225 @@ apiRouter.post('/auth/login', async (req, res) => {
       return res.status(400).json({ error: 'Username and password required' });
    }
 
-   const data = readUsers();
-   const user = data.users.find(u => u.username.toLowerCase() === username.toLowerCase());
-   if (!user) {
-      return res.status(401).json({ error: 'Invalid username or password' });
+   try {
+      const client = await pool.connect();
+      try {
+         const result = await client.query(
+            'SELECT id, username, password_hash FROM users WHERE LOWER(username) = LOWER($1)',
+            [username],
+         );
+         if (result.rows.length === 0) {
+            return res.status(401).json({ error: 'Invalid username or password' });
+         }
+         const user = result.rows[0];
+
+         const valid = await bcrypt.compare(password, user.password_hash);
+         if (!valid) {
+            return res.status(401).json({ error: 'Invalid username or password' });
+         }
+
+         const token = jwt.sign(
+            { id: user.id, username: user.username },
+            JWT_SECRET,
+            { expiresIn: '7d' },
+         );
+
+         return res.json({
+            token,
+            user: { id: user.id, username: user.username },
+         });
+      } finally {
+         client.release();
+      }
+   } catch (err) {
+      console.error('Login error', err);
+      return res.status(500).json({ error: 'Internal server error' });
    }
-
-   const valid = await bcrypt.compare(password, user.passwordHash);
-   if (!valid) {
-      return res.status(401).json({ error: 'Invalid username or password' });
-   }
-
-   const token = jwt.sign(
-      { id: user.id, username: user.username },
-      JWT_SECRET,
-      { expiresIn: '7d' }
-   );
-
-   res.json({
-      token,
-      user: { id: user.id, username: user.username },
-   });
 });
+
+// Helper to convert DB row to the shape the frontend expects
+const mapRecipeRowToApi = row => {
+   const imageUrl = row.image_url || null;
+   return {
+      id: row.id,
+      title: row.title,
+      type: row.type,
+      time: row.time,
+      description: row.description,
+      instructions: row.instructions,
+      imgUrl: imageUrl,
+      imageUrl,
+      creator: {
+         name: row.creator_name || 'Unknown',
+         ingredients: row.ingredients,
+      },
+      ingredients: row.ingredients,
+      userId: row.user_id,
+   };
+};
 
 // All recipe routes below require authentication
-apiRouter.get('/recipes', authMiddleware, (req, res) => {
+apiRouter.get('/recipes', authMiddleware, async (req, res) => {
    const userId = req.user.id;
-   let userRecipes = recipes.recipes.filter(r => (r.userId ?? null) === userId);
    const limit = parseInt(req.query._limit, 10);
-   if (!Number.isNaN(limit) && limit > 0) {
-      userRecipes = userRecipes.slice(0, limit);
+
+   try {
+      const client = await pool.connect();
+      try {
+         const params = [userId];
+         let sql =
+            'SELECT id, user_id, title, type, time, image_url, description, ingredients, instructions, created_at, updated_at, NULL::text AS creator_name FROM recipes WHERE user_id = $1 ORDER BY created_at DESC';
+         if (!Number.isNaN(limit) && limit > 0) {
+            sql += ' LIMIT $2';
+            params.push(limit);
+         }
+         const result = await client.query(sql, params);
+         return res.json(result.rows.map(mapRecipeRowToApi));
+      } finally {
+         client.release();
+      }
+   } catch (err) {
+      console.error('List recipes error', err);
+      return res.status(500).json({ error: 'Internal server error' });
    }
-   res.json(userRecipes);
 });
 
-apiRouter.get('/recipes/:id', authMiddleware, (req, res) => {
+apiRouter.get('/recipes/:id', authMiddleware, async (req, res) => {
    const { id } = req.params;
    const userId = req.user.id;
-   const recipe = recipes.recipes.find(r => r.id.toString() === id);
 
-   if (!recipe) {
-      return res.status(404).json({ error: 'Recipe not found' });
+   try {
+      const client = await pool.connect();
+      try {
+         const result = await client.query(
+            'SELECT id, user_id, title, type, time, image_url, description, ingredients, instructions, created_at, updated_at, NULL::text AS creator_name FROM recipes WHERE id = $1 AND user_id = $2',
+            [id, userId],
+         );
+         if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Recipe not found' });
+         }
+         return res.json(mapRecipeRowToApi(result.rows[0]));
+      } finally {
+         client.release();
+      }
+   } catch (err) {
+      console.error('Get recipe error', err);
+      return res.status(500).json({ error: 'Internal server error' });
    }
-   if ((recipe.userId ?? null) !== userId) {
-      return res.status(403).json({ error: 'Not authorized to view this recipe' });
-   }
-
-   res.json(recipe);
 });
 
 // POST - Add new recipe (requires auth)
-apiRouter.post('/recipes', authMiddleware, (req, res) => {
+apiRouter.post('/recipes', authMiddleware, async (req, res) => {
    const userId = req.user.id;
-   const newRecipe = req.body;
+   const body = req.body || {};
 
-   const maxId = recipes.recipes.reduce((max, r) => Math.max(max, r.id || 0), 0);
-   const recipe = {
-      ...newRecipe,
-      id: maxId + 1,
-      userId,
-   };
+   const imageUrl = body.imgUrl || body.imageUrl || null;
+   const ingredients = body.ingredients || body.creator?.ingredients || '';
 
-   recipes.recipes.push(recipe);
-   fs.writeFileSync(
-      path.join(__dirname, 'recipes.json'),
-      JSON.stringify(recipes, null, 2)
-   );
-
-   res.status(201).json(recipe);
+   try {
+      const client = await pool.connect();
+      try {
+         const insertResult = await client.query(
+            `INSERT INTO recipes
+               (user_id, title, type, time, image_url, description, ingredients, instructions)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+             RETURNING id, user_id, title, type, time, image_url, description, ingredients, instructions, created_at, updated_at, NULL::text AS creator_name`,
+            [
+               userId,
+               body.title,
+               body.type,
+               body.time,
+               imageUrl,
+               body.description,
+               ingredients,
+               body.instructions,
+            ],
+         );
+         const row = insertResult.rows[0];
+         return res.status(201).json(mapRecipeRowToApi(row));
+      } finally {
+         client.release();
+      }
+   } catch (err) {
+      console.error('Create recipe error', err);
+      return res.status(500).json({ error: 'Internal server error' });
+   }
 });
 
 // DELETE a recipe by id
-apiRouter.delete('/recipes/:id', authMiddleware, (req, res) => {
+apiRouter.delete('/recipes/:id', authMiddleware, async (req, res) => {
    const { id } = req.params;
    const userId = req.user.id;
 
-   const index = recipes.recipes.findIndex(r => r.id.toString() === id);
-
-   if (index === -1) {
-      return res.status(404).json({ error: 'Recipe not found' });
+   try {
+      const client = await pool.connect();
+      try {
+         const result = await client.query(
+            'DELETE FROM recipes WHERE id = $1 AND user_id = $2 RETURNING id',
+            [id, userId],
+         );
+         if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Recipe not found' });
+         }
+         return res.json({ message: 'Recipe deleted successfully' });
+      } finally {
+         client.release();
+      }
+   } catch (err) {
+      console.error('Delete recipe error', err);
+      return res.status(500).json({ error: 'Internal server error' });
    }
-
-   const recipe = recipes.recipes[index];
-   if ((recipe.userId ?? null) !== userId) {
-      return res.status(403).json({ error: 'Not authorized to delete this recipe' });
-   }
-
-   const deletedRecipe = recipes.recipes.splice(index, 1);
-   fs.writeFileSync(
-      path.join(__dirname, 'recipes.json'),
-      JSON.stringify(recipes, null, 2)
-   );
-
-   res.json({
-      message: 'Recipe deleted successfully',
-      recipe: deletedRecipe[0],
-   });
 });
 
 // PUT (update) a recipe by id
-apiRouter.put('/recipes/:id', authMiddleware, (req, res) => {
+apiRouter.put('/recipes/:id', authMiddleware, async (req, res) => {
    const { id } = req.params;
    const userId = req.user.id;
-   const updates = req.body;
+   const body = req.body || {};
 
-   const index = recipes.recipes.findIndex(r => r.id.toString() === id);
+   const imageUrl = body.imgUrl || body.imageUrl || null;
+   const ingredients = body.ingredients || body.creator?.ingredients || '';
 
-   if (index === -1) {
-      return res.status(404).json({ error: 'Recipe not found' });
+   try {
+      const client = await pool.connect();
+      try {
+         const result = await client.query(
+            `UPDATE recipes
+               SET title = $1,
+                   type = $2,
+                   time = $3,
+                   image_url = $4,
+                   description = $5,
+                   ingredients = $6,
+                   instructions = $7,
+                   updated_at = NOW()
+             WHERE id = $8 AND user_id = $9
+             RETURNING id, user_id, title, type, time, image_url, description, ingredients, instructions, created_at, updated_at, NULL::text AS creator_name`,
+            [
+               body.title,
+               body.type,
+               body.time,
+               imageUrl,
+               body.description,
+               ingredients,
+               body.instructions,
+               id,
+               userId,
+            ],
+         );
+
+         if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Recipe not found' });
+         }
+
+         return res.json(mapRecipeRowToApi(result.rows[0]));
+      } finally {
+         client.release();
+      }
+   } catch (err) {
+      console.error('Update recipe error', err);
+      return res.status(500).json({ error: 'Internal server error' });
    }
-
-   const recipe = recipes.recipes[index];
-   if ((recipe.userId ?? null) !== userId) {
-      return res.status(403).json({ error: 'Not authorized to update this recipe' });
-   }
-
-   recipes.recipes[index] = {
-      ...recipe,
-      ...updates,
-      id: parseInt(id, 10),
-      userId,
-   };
-
-   fs.writeFileSync(
-      path.join(__dirname, 'recipes.json'),
-      JSON.stringify(recipes, null, 2)
-   );
-
-   res.json(recipes.recipes[index]);
 });
 
 app.use('/api', apiRouter);
