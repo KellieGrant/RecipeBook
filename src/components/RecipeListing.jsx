@@ -5,6 +5,9 @@ import { useState } from 'react';
 const RecipeListing = ({ recipe }) => {
    const [showFullDescription, setShowFullDescription] = useState(false);
 
+   const imageUrl = recipe.imageUrl || recipe.imgUrl;
+   const quantity = recipe.quantity;
+
    let description = recipe.description;
 
    if (!showFullDescription) {
@@ -14,6 +17,18 @@ const RecipeListing = ({ recipe }) => {
    return (
       <>
          <div className='bg-white/70 dark:bg-dark-surface rounded-2xl shadow-md relative border border-light-border/40 dark:border-dark-muted/70 backdrop-blur-sm overflow-hidden'>
+            {imageUrl ? (
+               <div className='h-40 w-full overflow-hidden'>
+                  <img
+                     src={imageUrl}
+                     alt={recipe.title}
+                     className='h-full w-full object-cover'
+                     loading='lazy'
+                  />
+               </div>
+            ) : (
+               <div className='h-40 w-full bg-gradient-to-br from-light-accent/25 via-white/40 to-light-secondary/60 dark:from-dark-accent/20 dark:via-dark-surface dark:to-dark-secondary' />
+            )}
             <div className='p-5 flex flex-col h-full'>
                <div className='mb-4'>
                   <div className='inline-flex px-3 py-1 rounded-full bg-light-accent/15 text-xs font-semibold uppercase tracking-wide text-light-text dark:text-dark-muted my-1'>
@@ -36,10 +51,17 @@ const RecipeListing = ({ recipe }) => {
                   {showFullDescription ? 'Less' : 'more'}
                </button>
 
-               <div className='flex items-center justify-between mt-auto'>
-                  <span className='inline-flex items-center rounded-full bg-light-bg dark:bg-dark-bg/40 px-3 py-1 text-xs font-medium text-light-text dark:text-dark-muted'>
-                     {recipe.time}
-                  </span>
+               <div className='flex items-center justify-between mt-auto gap-2'>
+                  <div className='flex flex-wrap gap-2'>
+                     <span className='inline-flex items-center rounded-full bg-light-bg dark:bg-dark-bg/40 px-3 py-1 text-xs font-medium text-light-text dark:text-dark-muted'>
+                        {recipe.time}
+                     </span>
+                     {quantity ? (
+                        <span className='inline-flex items-center rounded-full bg-light-bg dark:bg-dark-bg/40 px-3 py-1 text-xs font-medium text-light-text dark:text-dark-muted'>
+                           {quantity}
+                        </span>
+                     ) : null}
+                  </div>
 
                   <Link
                      to={`/recipes/${recipe.id}`}

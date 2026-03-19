@@ -59,6 +59,7 @@ const RecipePage = ({ deleteRecipe }) => {
    };
 
    const imageUrl = recipe.imageUrl || recipe.imgUrl;
+   const quantity = recipe.quantity;
 
    return (
       <>
@@ -99,6 +100,11 @@ const RecipePage = ({ deleteRecipe }) => {
                                     <span className='inline-flex items-center rounded-full bg-white/85 text-xs font-semibold text-dark-surface px-3 py-1'>
                                        {recipe.time}
                                     </span>
+                                    {quantity ? (
+                                       <span className='inline-flex items-center rounded-full bg-white/85 text-xs font-semibold text-dark-surface px-3 py-1'>
+                                          {quantity}
+                                       </span>
+                                    ) : null}
                                  </div>
                               </div>
                            </div>
@@ -110,6 +116,7 @@ const RecipePage = ({ deleteRecipe }) => {
                               </h1>
                               <p className='text-sm text-light-text dark:text-dark-muted mb-4'>
                                  {recipe.type} • {recipe.time}
+                                 {quantity ? ` • ${quantity}` : ''}
                               </p>
                            </div>
                         )}

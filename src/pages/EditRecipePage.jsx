@@ -10,6 +10,7 @@ const EditRecipePage = ({ updateRecipeSubmit }) => {
       type: recipe.type ?? '',
       description: recipe.description ?? '',
       time: recipe.time ?? '',
+      quantity: recipe.quantity ?? '',
       imgUrl: recipe.imgUrl ?? recipe.imageUrl ?? '',
       ingredients: recipe.ingredients ?? recipe.creator?.ingredients ?? '',
       instructions: recipe.instructions ?? '',
@@ -23,6 +24,7 @@ const EditRecipePage = ({ updateRecipeSubmit }) => {
    const [type, setType] = useState(norlaizedRecipe.type);
    const [description, setDescription] = useState(norlaizedRecipe.description);
    const [time, setTime] = useState(norlaizedRecipe.time);
+   const [quantity, setQuantity] = useState(norlaizedRecipe.quantity);
    const [imgUrl, setImgUrl] = useState(norlaizedRecipe.imgUrl);
    const [creatorName, setCreatorName] = useState(norlaizedRecipe.creator.name);
    const [ingredients, setIngredients] = useState(norlaizedRecipe.ingredients);
@@ -40,6 +42,7 @@ const EditRecipePage = ({ updateRecipeSubmit }) => {
          type,
          description,
          time,
+         quantity: quantity.trim() ? quantity.trim() : null,
          // new schema (preferred)
          imgUrl: imgUrl.trim() ? imgUrl.trim() : null,
          ingredients,
@@ -124,6 +127,27 @@ const EditRecipePage = ({ updateRecipeSubmit }) => {
                            <option value='other'>Other</option>
                         </select>
                      </div>
+                  </div>
+
+                  <div className='grid grid-cols-1 md:grid-cols-2 gap-5'>
+                     <div>
+                        <label
+                           htmlFor='quantity'
+                           className='block text-xs font-semibold uppercase tracking-wide text-light-text dark:text-dark-muted mb-2'
+                        >
+                           Quantity / yield <span className='text-light-text/70 dark:text-dark-muted/70'>(optional)</span>
+                        </label>
+                        <input
+                           type='text'
+                           id='quantity'
+                           name='quantity'
+                           className='w-full rounded-xl border border-light-border/80 dark:border-dark-muted/80 bg-white dark:bg-dark-bg/60 dark:text-dark-text px-3 py-2.5 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-light-accent/60 dark:focus:ring-dark-accent/70'
+                           placeholder='e.g. Serves 4, Makes 12 muffins'
+                           value={quantity}
+                           onChange={e => setQuantity(e.target.value)}
+                        />
+                     </div>
+                     <div className='hidden md:block' aria-hidden="true" />
                   </div>
 
                   <div className='grid grid-cols-1 md:grid-cols-3 gap-5'>

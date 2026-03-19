@@ -6,6 +6,7 @@ const AddRecipePage = ({ addRecipeSubmit }) => {
   const [title, setTitle] = useState('');
   const [type, setType] = useState('Breakfast');
   const [time, setTime] = useState('10 min');
+  const [quantity, setQuantity] = useState('');
   const [imgUrl, setImgUrl] = useState('');
   const [description, setDescription] = useState('');
   const [creatorName, setCreatorName] = useState('');
@@ -21,6 +22,7 @@ const AddRecipePage = ({ addRecipeSubmit }) => {
       title,
       type,
       time,
+      quantity: quantity.trim() ? quantity.trim() : null,
       // new schema (preferred)
       imgUrl: imgUrl.trim() ? imgUrl.trim() : null,
       ingredients,
@@ -101,6 +103,24 @@ const AddRecipePage = ({ addRecipeSubmit }) => {
                   <option value="other">Other</option>
                 </select>
               </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div>
+                <label htmlFor="quantity" className="block text-xs font-semibold uppercase tracking-wide text-light-text dark:text-dark-muted mb-2">
+                  Quantity / yield <span className="text-light-text/70 dark:text-dark-muted/70">(optional)</span>
+                </label>
+                <input
+                  type="text"
+                  id="quantity"
+                  name="quantity"
+                  className="w-full rounded-xl border border-light-border/80 dark:border-dark-muted/80 bg-white dark:bg-dark-bg/60 dark:text-dark-text px-3 py-2.5 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-light-accent/60 dark:focus:ring-dark-accent/70"
+                  placeholder="e.g. Serves 4, Makes 12 muffins"
+                  value={quantity}
+                  onChange={e => setQuantity(e.target.value)}
+                />
+              </div>
+              <div className="hidden md:block" aria-hidden="true" />
             </div>
 
             {/* Recipe Name & Image */}

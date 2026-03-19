@@ -139,6 +139,7 @@ const mapRecipeRowToApi = row => {
       title: row.title,
       type: row.type,
       time: row.time,
+      quantity: row.quantity ?? null,
       description: row.description,
       instructions: row.instructions,
       imgUrl: imageUrl,
@@ -162,7 +163,7 @@ apiRouter.get('/recipes', authMiddleware, async (req, res) => {
       try {
          const params = [userId];
          let sql =
-            'SELECT id, user_id, title, type, time, image_url, description, ingredients, instructions, created_at, updated_at, NULL::text AS creator_name FROM recipes WHERE user_id = $1 ORDER BY created_at DESC';
+            'SELECT id, user_id, title, type, time, quantity, image_url, description, ingredients, instructions, created_at, updated_at, NULL::text AS creator_name FROM recipes WHERE user_id = $1 ORDER BY created_at DESC';
          if (!Number.isNaN(limit) && limit > 0) {
             sql += ' LIMIT $2';
             params.push(limit);
@@ -186,7 +187,7 @@ apiRouter.get('/recipes/:id', authMiddleware, async (req, res) => {
       const client = await pool.connect();
       try {
          const result = await client.query(
-            'SELECT id, user_id, title, type, time, image_url, description, ingredients, instructions, created_at, updated_at, NULL::text AS creator_name FROM recipes WHERE id = $1 AND user_id = $2',
+            'SELECT id, user_id, title, type, time, quantity, image_url, description, ingredients, instructions, created_at, updated_at, NULL::text AS creator_name FROM recipes WHERE id = $1 AND user_id = $2',
             [id, userId],
          );
          if (result.rows.length === 0) {
@@ -209,20 +210,22 @@ apiRouter.post('/recipes', authMiddleware, async (req, res) => {
 
    const imageUrl = body.imgUrl || body.imageUrl || null;
    const ingredients = body.ingredients || body.creator?.ingredients || '';
+   const quantity = body.quantity || null;
 
    try {
       const client = await pool.connect();
       try {
          const insertResult = await client.query(
             `INSERT INTO recipes
-               (user_id, title, type, time, image_url, description, ingredients, instructions)
-             VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-             RETURNING id, user_id, title, type, time, image_url, description, ingredients, instructions, created_at, updated_at, NULL::text AS creator_name`,
+               (user_id, title, type, time, quantity, image_url, description, ingredients, instructions)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+             RETURNING id, user_id, title, type, time, quantity, image_url, description, ingredients, instructions, created_at, updated_at, NULL::text AS creator_name`,
             [
                userId,
                body.title,
                body.type,
                body.time,
+               quantity,
                imageUrl,
                body.description,
                ingredients,
@@ -273,6 +276,7 @@ apiRouter.put('/recipes/:id', authMiddleware, async (req, res) => {
 
    const imageUrl = body.imgUrl || body.imageUrl || null;
    const ingredients = body.ingredients || body.creator?.ingredients || '';
+   const quantity = body.quantity || null;
 
    try {
       const client = await pool.connect();
@@ -282,17 +286,19 @@ apiRouter.put('/recipes/:id', authMiddleware, async (req, res) => {
                SET title = $1,
                    type = $2,
                    time = $3,
-                   image_url = $4,
-                   description = $5,
-                   ingredients = $6,
-                   instructions = $7,
+                   quantity = $4,
+                   image_url = $5,
+                   description = $6,
+                   ingredients = $7,
+                   instructions = $8,
                    updated_at = NOW()
-             WHERE id = $8 AND user_id = $9
-             RETURNING id, user_id, title, type, time, image_url, description, ingredients, instructions, created_at, updated_at, NULL::text AS creator_name`,
+             WHERE id = $9 AND user_id = $10
+             RETURNING id, user_id, title, type, time, quantity, image_url, description, ingredients, instructions, created_at, updated_at, NULL::text AS creator_name`,
             [
                body.title,
                body.type,
                body.time,
+               quantity,
                imageUrl,
                body.description,
                ingredients,
