@@ -22,6 +22,21 @@ button { border: 0; background: none; cursor: pointer; }
   .recipe-browser { height: 100%; border: 0; padding-bottom: 69px; }.mobile-header { height: 62px; display: grid; grid-template-columns: 46px 1fr 46px; align-items: center; border-bottom: 1px solid var(--line); padding: 0 12px; }.mobile-header strong { text-align: center; font-size: 17px; }.mobile-header button { font-size: 21px; }.browser-tools { padding: 12px 16px 11px; }.search { border: 0; background: #f7f6f5; }.add-recipe { display: none; }
   .recipe-list { padding: 0 16px 10px; }.recipe-card { min-height: 105px; grid-template-columns: 96px 1fr 26px; margin-top: 13px; }.recipe-card img { width: 96px; min-height: 105px; }.card-copy h2 { font-size: 14px; margin-bottom: 14px; }.desktop-only { display: none; }.recipe-count { display: none; }.mobile-tabs { position: absolute; z-index: 5; inset: auto 0 0; height: 69px; display: grid; grid-template-columns: repeat(4,1fr); background: rgba(255,255,255,.95); backdrop-filter: blur(16px); border-top: 1px solid var(--line); }.mobile-tabs button { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; color: #777; font-size: 10px; }.mobile-tabs button.active { color: #111; }.mobile-tabs .icon { font-size: 20px; }.recipe-detail { display: none; }.toast { top: 72px; white-space: nowrap; }
 }
+
+/* Saved dark appearance */
+:root[data-theme='dark'] { --line: #343432; --muted: #aaa7a2; --panel: #1d1d1c; color: #f1efeb; background: #111110; color-scheme: dark; }
+:root[data-theme='dark'] .app-shell,:root[data-theme='dark'] .main-span,:root[data-theme='dark'] .recipe-detail,:root[data-theme='dark'] .detail-page { background: #1d1d1c; }
+:root[data-theme='dark'] .sidebar { background: linear-gradient(135deg,#20201f,#181817); }
+:root[data-theme='dark'] .recipe-browser { background: #1d1d1c; }
+:root[data-theme='dark'] .recipe-card,:root[data-theme='dark'] .category-grid button,:root[data-theme='dark'] .secondary-button,:root[data-theme='dark'] .recipe-form input,:root[data-theme='dark'] .recipe-form select,:root[data-theme='dark'] .recipe-form textarea,:root[data-theme='dark'] .settings-card input:not([type='checkbox']) { background: #262624; border-color: #3b3b38; color: #f1efeb; }
+:root[data-theme='dark'] .main-nav button.active,:root[data-theme='dark'] .main-nav button:hover,:root[data-theme='dark'] .category-list button:hover,:root[data-theme='dark'] .category-list button.active,:root[data-theme='dark'] .sidebar-footer button.active { background: #30302e; color: #fff; }
+:root[data-theme='dark'] .category-list button,:root[data-theme='dark'] .card-copy p,:root[data-theme='dark'] .recipe-meta,:root[data-theme='dark'] .page-title p,:root[data-theme='dark'] .category-grid small,:root[data-theme='dark'] .settings-card small,:root[data-theme='dark'] .danger-zone p { color: #aaa7a2; }
+:root[data-theme='dark'] .card-copy h2,:root[data-theme='dark'] .page-title h1,:root[data-theme='dark'] .recipe-detail h1,:root[data-theme='dark'] .recipe-section h2,:root[data-theme='dark'] .category-grid strong,:root[data-theme='dark'] .recipe-form label,:root[data-theme='dark'] .empty-state strong { color: #f1efeb; }
+:root[data-theme='dark'] .browser-tools { border-color: #2c2c2a; }:root[data-theme='dark'] .search { background: #292927; border-color: #3a3a37; color: #bbb; }
+:root[data-theme='dark'] .hero-heart { background: rgba(30,30,29,.92); color: #fff; }:root[data-theme='dark'] .heart { color: #c9c6c1; }:root[data-theme='dark'] .heart.filled { color: #fff; }
+:root[data-theme='dark'] .mobile-tabs { background: rgba(29,29,28,.95); }:root[data-theme='dark'] .mobile-tabs button.active { color: #fff; }
+:root[data-theme='dark'] .danger-zone { background: #2b2020; border-color: #593a36; }:root[data-theme='dark'] .danger-zone button { color: #f0a89c; border-color: #965f56; }
+:root[data-theme='dark'] .primary-button { background: #f0eee9; color: #181817; }
 @media (min-width: 781px) and (max-height: 760px) { .app-shell { min-height: calc(100vh - 24px); height: calc(100vh - 24px); margin-block: 12px; }.browser-tools { padding-top: 36px; }.recipe-detail { padding-top: 32px; }.hero-image-wrap>img { height: 230px; } }
 
 /* Full app pages */
