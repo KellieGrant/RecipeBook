@@ -1,65 +1,78 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import './App.css'
 
-const recipes = [
+const starterRecipes = [
   { id: 1, title: 'Creamy Garlic Chicken Pasta', category: 'Dinner', time: '35 min', serves: 4, image: 'https://images.unsplash.com/photo-1555949258-eb67b1ef0ceb?auto=format&fit=crop&w=1400&q=85', ingredients: ['2 chicken breasts', '8 oz pasta (fettuccine or penne)', '3 cloves garlic, minced', '1 tbsp olive oil', '1 cup heavy cream', '1/2 cup grated parmesan', '2 cups baby spinach', 'Salt and pepper to taste'], steps: ['Cook pasta according to package instructions. Reserve 1/2 cup of pasta water, then drain.', 'Season chicken with salt and pepper. Heat olive oil in a pan over medium heat and cook for 6–7 minutes per side. Rest, then slice.', 'In the same pan, add garlic and cook for 30 seconds until fragrant.', 'Add heavy cream and bring to a simmer. Stir in parmesan until melted and smooth.', 'Add spinach and pasta, tossing until glossy. Top with sliced chicken and serve warm.'] },
   { id: 2, title: 'Beef Tacos', category: 'Dinner', time: '25 min', serves: 4, image: 'https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?auto=format&fit=crop&w=1400&q=85', ingredients: ['1 lb ground beef', '8 corn tortillas', '1 tbsp taco seasoning', '1 avocado, diced', '1/2 cup pico de gallo', 'Fresh cilantro and lime'], steps: ['Brown the beef in a large skillet and drain any excess fat.', 'Stir in taco seasoning with a splash of water and simmer for 5 minutes.', 'Warm the tortillas, fill with beef, and finish with avocado, pico, cilantro, and lime.'] },
   { id: 3, title: 'Honey Garlic Salmon', category: 'Dinner', time: '30 min', serves: 2, image: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=1400&q=85', ingredients: ['2 salmon fillets', '2 tbsp honey', '2 cloves garlic, minced', '1 tbsp soy sauce', '1 tsp sesame oil', 'Steamed greens, to serve'], steps: ['Whisk honey, garlic, soy sauce, and sesame oil together.', 'Sear salmon skin-side down until crisp, then turn.', 'Pour over the glaze and cook until sticky and the salmon flakes easily.'] },
   { id: 4, title: 'Classic Chili', category: 'Dinner', time: '1 hr', serves: 6, image: 'https://images.unsplash.com/photo-1575853121743-60c24f0a7502?auto=format&fit=crop&w=1400&q=85', ingredients: ['1 lb ground beef', '1 onion, diced', '1 can kidney beans', '1 can crushed tomatoes', '2 tbsp chili powder', '1 tsp ground cumin'], steps: ['Brown the beef with the onion in a heavy pot.', 'Add beans, tomatoes, and spices, then stir well.', 'Simmer gently for 40 minutes. Taste, season, and serve with your favorite toppings.'] },
   { id: 5, title: 'Blueberry Pancakes', category: 'Breakfast', time: '20 min', serves: 3, image: 'https://images.unsplash.com/photo-1528207776546-365bb710ee93?auto=format&fit=crop&w=1400&q=85', ingredients: ['1 1/2 cups flour', '2 tsp baking powder', '1 cup milk', '1 egg', '1 cup blueberries', 'Maple syrup, to serve'], steps: ['Whisk the dry ingredients in a bowl.', 'Add milk and egg, stirring just until combined, then fold in blueberries.', 'Cook spoonfuls on a buttered skillet until golden on both sides.'] },
 ]
+const categoryColors = { Dinner: '#313338', Lunch: '#bba57e', Breakfast: '#8796b8', Sides: '#4c9bc6', Desserts: '#6d91b7', Snacks: '#e89b21' }
+const readLocal = (key, fallback) => { try { const value = localStorage.getItem(key); return value ? JSON.parse(value) : fallback } catch { return fallback } }
+function Icon({ children }) { return <span className="icon" aria-hidden="true">{children}</span> }
 
-const categories = [['Dinner', 18, '#313338'], ['Lunch', 8, '#bba57e'], ['Breakfast', 6, '#8796b8'], ['Sides', 5, '#4c9bc6'], ['Desserts', 7, '#6d91b7'], ['Snacks', 4, '#e89b21']]
+function RecipeDetail({ recipe, favorite, onFavorite, onEdit, onBack }) {
+  if (!recipe) return <div className="page-empty"><Icon>⌕</Icon><h2>Select a recipe</h2><p>Choose one from the list to see the full recipe.</p></div>
+  return <article className="recipe-detail detail-page">
+    <div className="detail-actions"><button className="mobile-back" onClick={onBack}>‹ Back</button><button aria-label="Edit recipe" onClick={onEdit}>✎</button><button aria-label="Favorite recipe" onClick={onFavorite}>{favorite ? '★' : '☆'}</button><button aria-label="More actions">•••</button></div>
+    <div className="hero-image-wrap"><img src={recipe.image} alt={`${recipe.title}, ready to serve`} /><button className="hero-heart" onClick={onFavorite}>{favorite ? '♥' : '♡'}</button></div>
+    <h1>{recipe.title}</h1><p className="recipe-meta">{recipe.category}<span>•</span>{recipe.time}<span>•</span>Serves {recipe.serves}</p><hr />
+    <section className="recipe-section"><h2>Ingredients</h2><ul>{recipe.ingredients.map((item) => <li key={item}>{item}</li>)}</ul></section>
+    <section className="recipe-section instructions"><h2>Instructions</h2><ol>{recipe.steps.map((step) => <li key={step}>{step}</li>)}</ol></section>
+  </article>
+}
 
-function Icon({ children, className = '' }) { return <span className={`icon ${className}`} aria-hidden="true">{children}</span> }
+function RecipeForm({ recipe, categories, onSave, onCancel }) {
+  const [form, setForm] = useState(recipe || { title: '', category: categories[0] || 'Dinner', time: '30 min', serves: 4, image: '', ingredients: [], steps: [] })
+  const update = (key, value) => setForm((old) => ({ ...old, [key]: value }))
+  const submit = (e) => { e.preventDefault(); if (!form.title.trim()) return; onSave({ ...form, image: form.image || 'https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=1400&q=85' }) }
+  return <section className="content-page form-page"><div className="page-title"><div><span className="eyebrow">Recipe editor</span><h1>{recipe ? 'Edit recipe' : 'Add a recipe'}</h1><p>Everything is saved on this device.</p></div></div>
+    <form className="recipe-form" onSubmit={submit}>
+      <label className="wide">Recipe name<input required value={form.title} onChange={(e) => update('title', e.target.value)} placeholder="e.g. Sunday roast chicken" /></label>
+      <label>Category<select value={form.category} onChange={(e) => update('category', e.target.value)}>{categories.map((c) => <option key={c}>{c}</option>)}</select></label>
+      <label>Cooking time<input value={form.time} onChange={(e) => update('time', e.target.value)} placeholder="35 min" /></label>
+      <label>Serves<input type="number" min="1" value={form.serves} onChange={(e) => update('serves', Number(e.target.value))} /></label>
+      <label className="wide">Image URL<input value={form.image} onChange={(e) => update('image', e.target.value)} placeholder="https://…" /></label>
+      <label className="wide">Ingredients <small>One per line</small><textarea rows="7" value={form.ingredients.join('\n')} onChange={(e) => update('ingredients', e.target.value.split('\n').filter(Boolean))} /></label>
+      <label className="wide">Instructions <small>One step per line</small><textarea rows="7" value={form.steps.join('\n')} onChange={(e) => update('steps', e.target.value.split('\n').filter(Boolean))} /></label>
+      <div className="form-actions wide"><button type="button" className="secondary-button" onClick={onCancel}>Cancel</button><button className="primary-button">Save recipe</button></div>
+    </form>
+  </section>
+}
 
 function App() {
-  const [selectedId, setSelectedId] = useState(1)
-  const [query, setQuery] = useState('')
-  const [activeCategory, setActiveCategory] = useState('All')
-  const [favorites, setFavorites] = useState(new Set([1]))
-  const [mobileMenu, setMobileMenu] = useState(false)
-  const [toast, setToast] = useState('')
-  const visibleRecipes = useMemo(() => recipes.filter((r) => r.title.toLowerCase().includes(query.toLowerCase()) && (activeCategory === 'All' || r.category === activeCategory)), [query, activeCategory])
-  const selected = recipes.find((recipe) => recipe.id === selectedId) || recipes[0]
-  function toggleFavorite(id, event) { event?.stopPropagation(); setFavorites((current) => { const next = new Set(current); next.has(id) ? next.delete(id) : next.add(id); return next }) }
-  function chooseCategory(category) { setActiveCategory(category); setMobileMenu(false) }
-  function notify(message) { setToast(message); window.setTimeout(() => setToast(''), 2200) }
+  const [recipes, setRecipes] = useState(() => readLocal('recipebook.recipes', starterRecipes))
+  const [favorites, setFavorites] = useState(() => new Set(readLocal('recipebook.favorites', [1])))
+  const [customCategories, setCustomCategories] = useState(() => readLocal('recipebook.categories', []))
+  const [settings, setSettings] = useState(() => readLocal('recipebook.settings', { compact: false, showImages: true, name: 'Kellie' }))
+  const [page, setPage] = useState('recipes'); const [selectedId, setSelectedId] = useState(1); const [query, setQuery] = useState(''); const [activeCategory, setActiveCategory] = useState('All'); const [mobileMenu, setMobileMenu] = useState(false); const [mobileDetail, setMobileDetail] = useState(false); const [editing, setEditing] = useState(null); const [toast, setToast] = useState('')
+  useEffect(() => localStorage.setItem('recipebook.recipes', JSON.stringify(recipes)), [recipes])
+  useEffect(() => localStorage.setItem('recipebook.favorites', JSON.stringify([...favorites])), [favorites])
+  useEffect(() => localStorage.setItem('recipebook.categories', JSON.stringify(customCategories)), [customCategories])
+  useEffect(() => localStorage.setItem('recipebook.settings', JSON.stringify(settings)), [settings])
+  const categories = [...new Set([...Object.keys(categoryColors), ...customCategories, ...recipes.map((r) => r.category)])]
+  const visibleRecipes = useMemo(() => recipes.filter((r) => r.title.toLowerCase().includes(query.toLowerCase()) && (activeCategory === 'All' || r.category === activeCategory) && (page !== 'favorites' || favorites.has(r.id))), [recipes, query, activeCategory, page, favorites])
+  const selected = recipes.find((r) => r.id === selectedId) || visibleRecipes[0]
+  const notify = (message) => { setToast(message); window.setTimeout(() => setToast(''), 2200) }
+  const go = (next) => { setPage(next); setMobileMenu(false); setMobileDetail(false); if (next !== 'categories') setActiveCategory('All') }
+  const toggleFavorite = (id, e) => { e?.stopPropagation(); setFavorites((old) => { const next = new Set(old); next.has(id) ? next.delete(id) : next.add(id); return next }) }
+  const selectRecipe = (id) => { setSelectedId(id); setMobileDetail(true) }
+  const saveRecipe = (recipe) => { const saved = recipe.id ? recipe : { ...recipe, id: Date.now() }; setRecipes((old) => recipe.id ? old.map((r) => r.id === recipe.id ? saved : r) : [saved, ...old]); setSelectedId(saved.id); setEditing(null); setPage('recipes'); setMobileDetail(true); notify('Recipe saved locally') }
+  const addCategory = () => { const name = window.prompt('New category name'); if (name?.trim() && !categories.includes(name.trim())) setCustomCategories((old) => [...old, name.trim()]) }
+  const resetData = () => { if (window.confirm('Reset all local recipes and preferences?')) { setRecipes(starterRecipes); setFavorites(new Set([1])); setCustomCategories([]); setSettings({ compact: false, showImages: true, name: 'Kellie' }); notify('Local data reset') } }
 
-  return (
-    <main className="app-shell">
-      {toast && <div className="toast" role="status">{toast}</div>}
-      <aside className={`sidebar ${mobileMenu ? 'is-open' : ''}`}>
-        <div className="window-dots" aria-hidden="true"><i /><i /><i /></div>
-        <div className="brand"><span className="brand-mark">▤</span> RecipeBook</div>
-        <nav className="main-nav" aria-label="Main navigation">
-          <button className={activeCategory === 'All' ? 'active' : ''} onClick={() => chooseCategory('All')}><Icon>▦</Icon> All Recipes</button>
-          <button onClick={() => notify('Favorites view is ready for your recipes.')}><Icon>♡</Icon> Favorites</button>
-          <button onClick={() => notify('Choose a category below to filter recipes.')}><Icon>□</Icon> Categories</button>
-        </nav>
-        <div className="category-heading"><span>Categories</span><button aria-label="Add category" onClick={() => notify('Add category clicked')}>＋</button></div>
-        <div className="category-list">{categories.map(([name, count, color]) => <button key={name} className={activeCategory === name ? 'active' : ''} onClick={() => chooseCategory(name)}><span className="category-name"><i style={{ background: color }} />{name}</span><span>{count}</span></button>)}</div>
-        <div className="sidebar-footer"><button onClick={() => notify('Settings clicked')}><Icon>⚙</Icon> Settings</button><div className="profile"><span className="avatar">K</span><strong>Kellie</strong><span>⌄</span></div></div>
-      </aside>
+  const listPanel = <section className={`recipe-browser ${settings.compact ? 'compact' : ''} ${settings.showImages ? '' : 'hide-images'} ${mobileDetail ? 'mobile-hidden' : ''}`}>
+    <header className="mobile-header"><button onClick={() => setMobileMenu(!mobileMenu)}>☰</button><strong>{page === 'favorites' ? 'Favorites' : 'RecipeBook'}</strong><button onClick={() => { setEditing(null); setPage('form') }}>＋</button></header>
+    <div className="browser-tools"><label className="search"><Icon>⌕</Icon><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search recipes..." /><button>☷</button></label><button className="add-recipe" onClick={() => { setEditing(null); setPage('form') }}><span>＋</span> Add Recipe</button></div>
+    <div className="recipe-list">{visibleRecipes.length ? visibleRecipes.map((r) => <article key={r.id} className={`recipe-card ${selected?.id === r.id ? 'selected' : ''}`} onClick={() => selectRecipe(r.id)} tabIndex="0"><img src={r.image} alt="" /><div className="card-copy"><h2>{r.title}</h2><p><span className="desktop-only">{r.category} · </span>{r.time}</p></div><button className={`heart ${favorites.has(r.id) ? 'filled' : ''}`} onClick={(e) => toggleFavorite(r.id, e)}>{favorites.has(r.id) ? '♥' : '♡'}</button></article>) : <div className="empty-state"><span>{page === 'favorites' ? '♡' : '⌕'}</span><strong>{page === 'favorites' ? 'No favorites yet' : 'No recipes found'}</strong><p>{page === 'favorites' ? 'Tap a heart to save a recipe here.' : 'Try clearing your search or filters.'}</p></div>}</div>
+    <footer className="recipe-count">{visibleRecipes.length} {visibleRecipes.length === 1 ? 'recipe' : 'recipes'}</footer>
+    <nav className="mobile-tabs"><button className={page === 'recipes' ? 'active' : ''} onClick={() => go('recipes')}><Icon>▦</Icon>Recipes</button><button className={page === 'categories' ? 'active' : ''} onClick={() => go('categories')}><Icon>□</Icon>Categories</button><button className={page === 'favorites' ? 'active' : ''} onClick={() => go('favorites')}><Icon>♡</Icon>Favorites</button><button className={page === 'settings' ? 'active' : ''} onClick={() => go('settings')}><Icon>⚙</Icon>Settings</button></nav>
+  </section>
 
-      <section className="recipe-browser">
-        <header className="mobile-header"><button aria-label="Open menu" onClick={() => setMobileMenu(!mobileMenu)}>☰</button><strong>RecipeBook</strong><button aria-label="Add recipe" onClick={() => notify('Add recipe clicked')}>＋</button></header>
-        <div className="browser-tools"><label className="search"><Icon>⌕</Icon><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search recipes..." /><button aria-label="Filter recipes">☷</button></label><button className="add-recipe" onClick={() => notify('Add recipe clicked')}><span>＋</span> Add Recipe</button></div>
-        <div className="recipe-list">
-          {visibleRecipes.length ? visibleRecipes.map((recipe) => <article key={recipe.id} className={`recipe-card ${selectedId === recipe.id ? 'selected' : ''}`} onClick={() => setSelectedId(recipe.id)} tabIndex="0" onKeyDown={(e) => e.key === 'Enter' && setSelectedId(recipe.id)}><img src={recipe.image} alt="" /><div className="card-copy"><h2>{recipe.title}</h2><p><span className="desktop-only">{recipe.category} · </span>{recipe.time}</p></div><button className={`heart ${favorites.has(recipe.id) ? 'filled' : ''}`} onClick={(e) => toggleFavorite(recipe.id, e)} aria-label={`${favorites.has(recipe.id) ? 'Remove' : 'Add'} ${recipe.title} ${favorites.has(recipe.id) ? 'from' : 'to'} favorites`}>{favorites.has(recipe.id) ? '♥' : '♡'}</button></article>) : <div className="empty-state">No recipes found.<button onClick={() => { setQuery(''); setActiveCategory('All') }}>Clear filters</button></div>}
-        </div>
-        <footer className="recipe-count">{visibleRecipes.length} sample recipes</footer>
-        <nav className="mobile-tabs" aria-label="Mobile navigation"><button className="active" onClick={() => chooseCategory('All')}><Icon>▦</Icon>All Recipes</button><button onClick={() => setMobileMenu(true)}><Icon>□</Icon>Categories</button><button onClick={() => notify('Favorites clicked')}><Icon>♡</Icon>Favorites</button><button onClick={() => notify('Settings clicked')}><Icon>⚙</Icon>Settings</button></nav>
-      </section>
-
-      <article className="recipe-detail">
-        <div className="detail-actions"><button aria-label="Edit recipe" onClick={() => notify('Edit recipe clicked')}>✎</button><button aria-label="Favorite recipe" onClick={(e) => toggleFavorite(selected.id, e)}>{favorites.has(selected.id) ? '★' : '☆'}</button><button aria-label="More actions" onClick={() => notify('More actions clicked')}>•••</button></div>
-        <div className="hero-image-wrap"><img src={selected.image} alt={`${selected.title}, ready to serve`} /><button className="hero-heart" onClick={(e) => toggleFavorite(selected.id, e)} aria-label="Toggle favorite">{favorites.has(selected.id) ? '♥' : '♡'}</button></div>
-        <h1>{selected.title}</h1><p className="recipe-meta">{selected.category}<span>•</span>{selected.time}<span>•</span>Serves {selected.serves}</p><hr />
-        <section className="recipe-section"><h2>Ingredients</h2><ul>{selected.ingredients.map((item) => <li key={item}>{item}</li>)}</ul></section>
-        <section className="recipe-section instructions"><h2>Instructions</h2><ol>{selected.steps.map((step) => <li key={step}>{step}</li>)}</ol></section>
-      </article>
-    </main>
-  )
+  return <main className="app-shell">{toast && <div className="toast">{toast}</div>}
+    <aside className={`sidebar ${mobileMenu ? 'is-open' : ''}`}><div className="brand"><span className="brand-mark">▤</span> RecipeBook</div><nav className="main-nav"><button className={page === 'recipes' ? 'active' : ''} onClick={() => go('recipes')}><Icon>▦</Icon> All Recipes</button><button className={page === 'favorites' ? 'active' : ''} onClick={() => go('favorites')}><Icon>♡</Icon> Favorites</button><button className={page === 'categories' ? 'active' : ''} onClick={() => go('categories')}><Icon>□</Icon> Categories</button></nav><div className="category-heading"><span>Categories</span><button onClick={addCategory}>＋</button></div><div className="category-list">{categories.map((name) => <button key={name} className={activeCategory === name && page === 'recipes' ? 'active' : ''} onClick={() => { setActiveCategory(name); setPage('recipes'); setMobileMenu(false) }}><span className="category-name"><i style={{ background: categoryColors[name] || '#9b8bb2' }} />{name}</span><span>{recipes.filter((r) => r.category === name).length}</span></button>)}</div><div className="sidebar-footer"><button className={page === 'settings' ? 'active' : ''} onClick={() => go('settings')}><Icon>⚙</Icon> Settings</button><div className="profile"><span className="avatar">{settings.name.charAt(0).toUpperCase()}</span><strong>{settings.name}</strong><span>⌄</span></div></div></aside>
+    {page === 'form' ? <div className="main-span"><RecipeForm recipe={editing} categories={categories} onSave={saveRecipe} onCancel={() => go('recipes')} /></div> : page === 'categories' ? <div className="main-span"><section className="content-page"><div className="page-title"><div><span className="eyebrow">Browse your collection</span><h1>Categories</h1><p>Keep every recipe easy to find.</p></div><button className="primary-button" onClick={addCategory}>＋ New category</button></div><div className="category-grid">{categories.map((name) => { const items = recipes.filter((r) => r.category === name); return <button key={name} onClick={() => { setActiveCategory(name); setPage('recipes') }}><i style={{ background: categoryColors[name] || '#9b8bb2' }} /><span><strong>{name}</strong><small>{items.length} {items.length === 1 ? 'recipe' : 'recipes'}</small></span><b>→</b></button> })}</div></section></div> : page === 'settings' ? <div className="main-span"><section className="content-page settings-page"><div className="page-title"><div><span className="eyebrow">Make it yours</span><h1>Settings</h1><p>These preferences stay on this device.</p></div></div><div className="settings-card"><label><span><strong>Your name</strong><small>Shown in the sidebar profile</small></span><input value={settings.name} onChange={(e) => setSettings({ ...settings, name: e.target.value })} /></label><label><span><strong>Compact recipe cards</strong><small>Fit more recipes in the list</small></span><input type="checkbox" checked={settings.compact} onChange={(e) => setSettings({ ...settings, compact: e.target.checked })} /></label><label><span><strong>Show recipe images</strong><small>Display food photos in recipe cards</small></span><input type="checkbox" checked={settings.showImages} onChange={(e) => setSettings({ ...settings, showImages: e.target.checked })} /></label></div><div className="danger-zone"><div><strong>Reset local data</strong><p>Restore the sample recipes and default settings.</p></div><button onClick={resetData}>Reset everything</button></div></section></div> : <>{listPanel}<RecipeDetail recipe={selected} favorite={favorites.has(selected?.id)} onFavorite={(e) => toggleFavorite(selected.id, e)} onEdit={() => { setEditing(selected); setPage('form') }} onBack={() => setMobileDetail(false)} /></>}
+  </main>
 }
 export default App
