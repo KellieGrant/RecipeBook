@@ -54,5 +54,5 @@ button { border: 0; background: none; cursor: pointer; }
 
 @media (max-width: 780px) {
   .main-span { position: fixed; inset: 0; z-index: 6; overflow-y: auto; padding-bottom: 72px; }.content-page { padding: 68px 20px 30px; }.page-title { align-items: start; }.page-title h1 { font-size: 30px; }.page-title .primary-button { white-space: nowrap; }.category-grid { grid-template-columns: 1fr; }.recipe-form { grid-template-columns: 1fr; }.recipe-form label.wide,.form-actions.wide { grid-column: auto; }.settings-card label { align-items: start; }.settings-card input:not([type='checkbox']) { width: 130px; }.danger-zone { align-items: start; flex-direction: column; }
-  .detail-page { display: block; position: fixed; z-index: 7; inset: 0; padding: 20px 18px 50px; background: #fff; }.detail-page .detail-actions { align-items: center; }.mobile-back { display: block; }.recipe-browser.mobile-hidden { visibility: hidden; }.hero-image-wrap>img { height: 260px; }
+  .detail-page { display: none; }.detail-page.is-open { display: block; position: fixed; z-index: 7; inset: 0; padding: 20px 18px 50px; background: var(--panel); }.detail-page .detail-actions { align-items: center; }.mobile-back { display: block; }.recipe-browser.mobile-hidden { visibility: hidden; }.hero-image-wrap>img { height: 260px; }
 }

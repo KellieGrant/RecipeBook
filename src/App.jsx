@@ -105,7 +105,7 @@ function App() {
     if (page === 'settings') return <SettingsPage settings={settings} onChange={setSettings} onReset={resetData} />
     return <>
       <RecipeList page={page} recipes={visibleRecipes} selectedId={selectedRecipe?.id} favorites={favorites} query={query} settings={settings} mobileDetail={mobileDetail} onQueryChange={setQuery} onSelect={openRecipe} onFavorite={toggleFavorite} onAdd={() => openRecipeForm()} onMenu={() => setMobileMenu((open) => !open)} onNavigate={navigate} />
-      <RecipeDetail recipe={selectedRecipe} favorite={favorites.has(selectedRecipe?.id)} onFavorite={(event) => toggleFavorite(selectedRecipe.id, event)} onEdit={() => openRecipeForm(selectedRecipe)} onBack={() => setMobileDetail(false)} />
+      <RecipeDetail recipe={selectedRecipe} favorite={favorites.has(selectedRecipe?.id)} isOpen={mobileDetail} onFavorite={(event) => toggleFavorite(selectedRecipe.id, event)} onEdit={() => openRecipeForm(selectedRecipe)} onBack={() => setMobileDetail(false)} />
     </>
   }
 
