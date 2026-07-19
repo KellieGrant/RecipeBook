@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { fallbackRecipeImage } from '../data/recipes'
+import MobilePageHeader from '../components/MobilePageHeader'
 
 export default function RecipeFormPage({ recipe, categories, onSave, onCancel }) {
   const [form, setForm] = useState(recipe || { title: '', category: categories[0] || 'Dinner', time: '30 min', serves: 4, image: '', ingredients: [], steps: [] })
@@ -10,7 +11,7 @@ export default function RecipeFormPage({ recipe, categories, onSave, onCancel })
     onSave({ ...form, image: form.image || fallbackRecipeImage })
   }
 
-  return <div className="main-span"><section className="content-page form-page">
+  return <div className="main-span"><MobilePageHeader title={recipe ? 'Edit recipe' : 'Add recipe'} onBack={onCancel} /><section className="content-page form-page">
     <div className="page-title"><div><span className="eyebrow">Recipe editor</span><h1>{recipe ? 'Edit recipe' : 'Add a recipe'}</h1><p>Everything is saved on this device.</p></div></div>
     <form className="recipe-form" onSubmit={submit}>
       <label className="wide">Recipe name<input required value={form.title} onChange={(event) => update('title', event.target.value)} placeholder="e.g. Sunday roast chicken" /></label>

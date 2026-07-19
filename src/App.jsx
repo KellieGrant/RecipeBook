@@ -101,8 +101,8 @@ function App() {
 
   function renderPage() {
     if (page === 'form') return <RecipeFormPage recipe={editing} categories={categories} onSave={saveRecipe} onCancel={() => navigate('recipes')} />
-    if (page === 'categories') return <CategoriesPage categories={categories} recipes={recipes} onAdd={addCategory} onSelect={selectCategory} />
-    if (page === 'settings') return <SettingsPage settings={settings} onChange={setSettings} onReset={resetData} />
+    if (page === 'categories') return <CategoriesPage categories={categories} recipes={recipes} onAdd={addCategory} onSelect={selectCategory} onBack={() => navigate('recipes')} />
+    if (page === 'settings') return <SettingsPage settings={settings} onChange={setSettings} onReset={resetData} onBack={() => navigate('recipes')} />
     return <>
       <RecipeList page={page} recipes={visibleRecipes} selectedId={selectedRecipe?.id} favorites={favorites} query={query} settings={settings} mobileDetail={mobileDetail} onQueryChange={setQuery} onSelect={openRecipe} onFavorite={toggleFavorite} onAdd={() => openRecipeForm()} onMenu={() => setMobileMenu((open) => !open)} onNavigate={navigate} />
       <RecipeDetail recipe={selectedRecipe} favorite={favorites.has(selectedRecipe?.id)} isOpen={mobileDetail} onFavorite={(event) => toggleFavorite(selectedRecipe.id, event)} onEdit={() => openRecipeForm(selectedRecipe)} onBack={() => setMobileDetail(false)} />
