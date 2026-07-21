@@ -23,7 +23,7 @@ export default function RecipeFormPage({ recipe, categories, onSave, onCancel })
     try {
       const result = await findRecipeImage(form.title, form.category)
       update('image', result.url)
-      setImageMessage(result.source === 'ai' ? 'AI image created.' : 'Matching food image found.')
+      setImageMessage(result.source === 'ai' ? 'AI image created.' : `Matching image found for “${form.title}”.`)
     } catch (error) { setImageMessage(error.message) }
     finally { setFindingImage(false) }
   }

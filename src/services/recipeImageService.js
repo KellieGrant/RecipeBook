@@ -56,6 +56,36 @@ async function resolveFromUnsplash(title, category) {
   return { url: `${photo.urls.regular}&auto=format&fit=crop&w=1400&q=85`, source: 'unsplash', attribution: { photographer: photo.user.name, link: photo.links.html } }
 }
 
+function relevanceScore(fileTitle, recipeTitle) {
+  const words = recipeTitle.toLowerCase().split(/[^a-z0-9]+/).filter((word) => word.length > 2)
+  const candidate = fileTitle.toLowerCase()
+  return words.reduce((score, word) => score + (candidate.includes(word) ? 1 : 0), 0)
+}
+
+async function resolveFromWikimedia(title, category) {
+  const params = new URLSearchParams({
+    origin: '*', action: 'query', format: 'json', formatversion: '2',
+    generator: 'search', gsrsearch: `${title.trim()} ${category === 'Desserts' ? 'dessert' : 'dish'}`,
+    gsrnamespace: '6', gsrlimit: '8', prop: 'imageinfo',
+    iiprop: 'url|mime', iiurlwidth: '1400',
+  })
+  const response = await fetch(`https://commons.wikimedia.org/w/api.php?${params}`)
+  if (!response.ok) throw new Error('Title-based image search is unavailable.')
+  const pages = (await response.json()).query?.pages || []
+  const candidates = pages
+    .map((page) => ({ page, info: page.imageinfo?.[0], score: relevanceScore(page.title, title) }))
+    .filter(({ info, score }) => info?.thumburl && info.mime?.startsWith('image/') && score > 0)
+    .sort((a, b) => b.score - a.score)
+
+  for (const { page, info } of candidates) {
+    try {
+      await validateImage(info.thumburl)
+      return { url: info.thumburl, source: 'wikimedia', attribution: { title: page.title, link: info.descriptionurl } }
+    } catch { /* try the next relevant result */ }
+  }
+  throw new Error('No matching dish photo was found.')
+}
+
 export async function findRecipeImage(title, category) {
   if (!title?.trim()) throw new Error('Add a recipe name before finding an image.')
   try {
@@ -63,7 +93,7 @@ export async function findRecipeImage(title, category) {
       ? await resolveFromAiEndpoint(title, category)
       : unsplashAccessKey
         ? await resolveFromUnsplash(title, category)
-        : { url: curatedImageFor(title, category), source: 'curated-match' }
+        : await resolveFromWikimedia(title, category)
     await validateImage(result.url)
     return result
   } catch {
