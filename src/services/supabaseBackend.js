@@ -121,9 +121,14 @@ export const supabaseBackend = {
     const { data, error } = await supabase.auth.signInWithPassword({ email: normalizedEmail, password })
     if (error) throw error
 
+    const authUser = data.user ?? data.session?.user
+    if (!authUser) {
+      throw new Error('Could not load authenticated user after sign in.')
+    }
+
     const user = {
-      id: data.user.id,
-      email: data.user.email,
+      id: authUser.id,
+      email: authUser.email,
       name: name?.trim() || normalizedEmail.split('@')[0],
     }
 
@@ -155,9 +160,14 @@ export const supabaseBackend = {
 
     if (error) throw error
 
+    const authUser = data.user ?? data.session?.user
+    if (!authUser) {
+      throw new Error('Could not load authenticated user after sign up.')
+    }
+
     const user = {
-      id: data.user?.id || userIdFromEmail(normalizedEmail),
-      email: data.user?.email || normalizedEmail,
+      id: authUser.id,
+      email: authUser.email,
       name: name?.trim() || normalizedEmail.split('@')[0],
     }
 
