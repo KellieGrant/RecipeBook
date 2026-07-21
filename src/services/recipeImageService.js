@@ -7,10 +7,31 @@ function searchTerms(title, category) {
   return `${title.trim()} ${category || ''} plated dish food photography`.trim()
 }
 
-function stableNumber(value) {
-  let hash = 0
-  for (const character of value) hash = ((hash << 5) - hash + character.charCodeAt(0)) | 0
-  return Math.abs(hash)
+const curatedImages = [
+  { terms: ['pasta', 'spaghetti', 'noodle', 'fettuccine', 'lasagna'], url: 'https://images.unsplash.com/photo-1555949258-eb67b1ef0ceb?auto=format&fit=crop&w=1400&q=85' },
+  { terms: ['taco', 'burrito', 'quesadilla', 'mexican'], url: 'https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?auto=format&fit=crop&w=1400&q=85' },
+  { terms: ['salmon', 'fish', 'seafood'], url: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=1400&q=85' },
+  { terms: ['chili', 'stew', 'soup'], url: 'https://images.unsplash.com/photo-1575853121743-60c24f0a7502?auto=format&fit=crop&w=1400&q=85' },
+  { terms: ['pancake', 'waffle', 'crepe', 'breakfast'], url: 'https://images.unsplash.com/photo-1528207776546-365bb710ee93?auto=format&fit=crop&w=1400&q=85' },
+  { terms: ['pizza'], url: 'https://images.unsplash.com/photo-1579751626657-72bc17010498?auto=format&fit=crop&w=1400&q=85' },
+  { terms: ['burger', 'hamburger', 'sandwich'], url: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=1400&q=85' },
+  { terms: ['salad', 'vegetable', 'vegan'], url: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=1400&q=85' },
+  { terms: ['cake', 'dessert', 'cupcake'], url: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=1400&q=85' },
+]
+
+function curatedImageFor(title, category) {
+  const description = `${title} ${category}`.toLowerCase()
+  return curatedImages.find(({ terms }) => terms.some((term) => description.includes(term)))?.url || fallbackRecipeImage
+}
+
+function validateImage(url) {
+  return new Promise((resolve, reject) => {
+    const image = new Image()
+    const timeout = window.setTimeout(() => reject(new Error('Image validation timed out.')), 8000)
+    image.onload = () => { window.clearTimeout(timeout); resolve(url) }
+    image.onerror = () => { window.clearTimeout(timeout); reject(new Error('The returned image URL could not be loaded.')) }
+    image.src = url
+  })
 }
 
 async function resolveFromAiEndpoint(title, category) {
@@ -37,15 +58,26 @@ async function resolveFromUnsplash(title, category) {
 
 export async function findRecipeImage(title, category) {
   if (!title?.trim()) throw new Error('Add a recipe name before finding an image.')
-  if (imageEndpoint) return resolveFromAiEndpoint(title, category)
-  if (unsplashAccessKey) return resolveFromUnsplash(title, category)
-
-  const query = encodeURIComponent(`${title.trim()},${category || 'food'},dish`)
-  return { url: `https://loremflickr.com/1200/800/${query}?lock=${stableNumber(title)}`, source: 'automatic-search' }
+  try {
+    const result = imageEndpoint
+      ? await resolveFromAiEndpoint(title, category)
+      : unsplashAccessKey
+        ? await resolveFromUnsplash(title, category)
+        : { url: curatedImageFor(title, category), source: 'curated-match' }
+    await validateImage(result.url)
+    return result
+  } catch {
+    const safeUrl = curatedImageFor(title, category)
+    await validateImage(safeUrl)
+    return { url: safeUrl, source: 'curated-match' }
+  }
 }
 
 export async function imageForRecipe(recipe) {
-  if (recipe.image?.trim()) return { url: recipe.image.trim(), source: 'manual' }
+  if (recipe.image?.trim()) {
+    try { await validateImage(recipe.image.trim()); return { url: recipe.image.trim(), source: 'manual' } }
+    catch { return findRecipeImage(recipe.title, recipe.category) }
+  }
   try { return await findRecipeImage(recipe.title, recipe.category) }
   catch { return { url: fallbackRecipeImage, source: 'fallback' } }
 }

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import MobilePageHeader from '../components/MobilePageHeader'
 import { findRecipeImage, imageForRecipe } from '../services/recipeImageService'
+import { fallbackRecipeImage } from '../data/recipes'
 
 export default function RecipeFormPage({ recipe, categories, onSave, onCancel }) {
   const [form, setForm] = useState(recipe || { title: '', category: categories[0] || 'Dinner', time: '30 min', serves: 4, image: '', ingredients: [], steps: [] })
@@ -34,7 +35,7 @@ export default function RecipeFormPage({ recipe, categories, onSave, onCancel })
       <label>Category<select value={form.category} onChange={(event) => update('category', event.target.value)}>{categories.map((category) => <option key={category}>{category}</option>)}</select></label>
       <label>Cooking time<input value={form.time} onChange={(event) => update('time', event.target.value)} placeholder="35 min" /></label>
       <label>Serves<input type="number" min="1" value={form.serves} onChange={(event) => update('serves', Number(event.target.value))} /></label>
-      <label className="wide">Image <small>Optional — we’ll find one automatically</small><div className="image-field"><input value={form.image} onChange={(event) => update('image', event.target.value)} placeholder="Paste a URL or leave blank" /><button type="button" onClick={findImage} disabled={findingImage}>{findingImage ? 'Finding…' : '✦ Find image'}</button></div>{imageMessage && <span className="image-message">{imageMessage}</span>}{form.image && <img className="image-preview" src={form.image} alt="Recipe preview" />}</label>
+      <label className="wide">Image <small>Optional — we’ll find one automatically</small><div className="image-field"><input value={form.image} onChange={(event) => update('image', event.target.value)} placeholder="Paste a URL or leave blank" /><button type="button" onClick={findImage} disabled={findingImage}>{findingImage ? 'Finding…' : '✦ Find image'}</button></div>{imageMessage && <span className="image-message">{imageMessage}</span>}{form.image && <img className="image-preview" src={form.image} alt="Recipe preview" onError={(event) => { event.currentTarget.onerror = null; event.currentTarget.src = fallbackRecipeImage }} />}</label>
       <label className="wide">Ingredients <small>One per line</small><textarea rows="7" value={form.ingredients.join('\n')} onChange={(event) => update('ingredients', event.target.value.split('\n').filter(Boolean))} /></label>
       <label className="wide">Instructions <small>One step per line</small><textarea rows="7" value={form.steps.join('\n')} onChange={(event) => update('steps', event.target.value.split('\n').filter(Boolean))} /></label>
       <div className="form-actions wide"><button type="button" className="secondary-button" onClick={onCancel}>Cancel</button><button className="primary-button" disabled={findingImage}>{findingImage ? 'Finding image…' : 'Save recipe'}</button></div>
