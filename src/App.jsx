@@ -11,19 +11,14 @@ import { categoryColors, defaultSettings, starterRecipes } from './data/recipes'
 import { backend } from './services/backend'
 
 const initialSession = backend.getSession()
-const initialUserData = initialSession ? backend.loadUserData(initialSession) : {
-  recipes: starterRecipes,
-  favorites: [1],
-  categories: [],
-  settings: defaultSettings,
-}
 
 function App() {
   const [user, setUser] = useState(initialSession)
-  const [recipes, setRecipes] = useState(initialUserData.recipes)
-  const [favorites, setFavorites] = useState(() => new Set(initialUserData.favorites))
-  const [customCategories, setCustomCategories] = useState(initialUserData.categories)
-  const [settings, setSettings] = useState(() => ({ ...defaultSettings, ...initialUserData.settings }))
+  const [recipes, setRecipes] = useState(starterRecipes)
+  const [favorites, setFavorites] = useState(() => new Set([1]))
+  const [customCategories, setCustomCategories] = useState([])
+  const [settings, setSettings] = useState(defaultSettings)
+  const [bootstrapping, setBootstrapping] = useState(Boolean(initialSession))
   const [page, setPage] = useState('recipes')
   const [selectedId, setSelectedId] = useState(1)
   const [query, setQuery] = useState('')
@@ -34,9 +29,36 @@ function App() {
   const [toast, setToast] = useState('')
 
   useEffect(() => {
-    if (!user) return
-    backend.saveUserData(user.id, { recipes, favorites: [...favorites], categories: customCategories, settings })
-  }, [user, recipes, favorites, customCategories, settings])
+    let active = true
+
+    async function hydrateUserData() {
+      if (!user) {
+        setBootstrapping(false)
+        return
+      }
+
+      try {
+        const data = await backend.loadUserData(user)
+        if (!active) return
+        setRecipes(data.recipes)
+        setFavorites(new Set(data.favorites))
+        setCustomCategories(data.categories)
+        setSettings({ ...defaultSettings, ...data.settings, name: data.settings?.name || user.name })
+      } finally {
+        if (active) setBootstrapping(false)
+      }
+    }
+
+    void hydrateUserData()
+
+    return () => { active = false }
+  }, [user])
+
+  useEffect(() => {
+    if (!user || bootstrapping) return
+    void backend.saveUserData(user.id, { recipes, favorites: [...favorites], categories: customCategories, settings })
+  }, [user, recipes, favorites, customCategories, settings, bootstrapping])
+
   useEffect(() => { document.documentElement.dataset.theme = settings.darkMode ? 'dark' : 'light' }, [settings.darkMode])
 
   const categories = [...new Set([...Object.keys(categoryColors), ...customCategories, ...recipes.map((recipe) => recipe.category)])]
@@ -113,8 +135,11 @@ function App() {
   }
 
   async function login(credentials) {
-    const signedInUser = await backend.signIn(credentials)
-    const data = backend.loadUserData(signedInUser)
+    setBootstrapping(true)
+    const signedInUser = credentials.mode === 'signup'
+      ? await backend.signUp(credentials)
+      : await backend.signIn(credentials)
+    const data = await backend.loadUserData(signedInUser)
     setUser(signedInUser)
     setRecipes(data.recipes)
     setFavorites(new Set(data.favorites))
@@ -126,6 +151,10 @@ function App() {
   async function signOut() {
     await backend.signOut()
     setUser(null)
+    setRecipes(starterRecipes)
+    setFavorites(new Set([1]))
+    setCustomCategories([])
+    setSettings(defaultSettings)
     setMobileMenu(false)
     setMobileDetail(false)
   }
@@ -141,6 +170,9 @@ function App() {
   }
 
   if (!user) return <LoginPage onLogin={login} />
+  if (bootstrapping) {
+    return <main className="app-shell"><div className="page-empty"><h2>Loading your account…</h2></div></main>
+  }
 
   return <main className="app-shell">
     {toast && <div className="toast">{toast}</div>}
