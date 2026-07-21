@@ -1,8 +1,6 @@
-import MobilePageHeader from '../components/MobilePageHeader'
-
-export default function SettingsPage({ settings, user, onChange, onReset, onBack, onSignOut }) {
+export default function SettingsPage({ settings, user, onChange, onReset, onSignOut }) {
   const set = (key, value) => onChange({ ...settings, [key]: value })
-  return <div className="main-span"><MobilePageHeader title="Settings" onBack={onBack} /><section className="content-page settings-page">
+  return <div className="main-span"><section className="content-page settings-page">
     <div className="page-title"><div><span className="eyebrow">Make it yours</span><h1>Settings</h1><p>These preferences stay on this device.</p></div></div>
     <div className="settings-card">
       <label><span><strong>Your name</strong><small>Shown in the sidebar profile</small></span><input value={settings.name} onChange={(event) => set('name', event.target.value)} /></label>

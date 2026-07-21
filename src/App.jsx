@@ -3,6 +3,7 @@ import './App.css'
 import Sidebar from './components/Sidebar'
 import RecipeList from './components/RecipeList'
 import RecipeDetail from './components/RecipeDetail'
+import MobileTabs from './components/MobileTabs'
 import CategoriesPage from './pages/CategoriesPage'
 import RecipeFormPage from './pages/RecipeFormPage'
 import SettingsPage from './pages/SettingsPage'
@@ -161,10 +162,10 @@ function App() {
 
   function renderPage() {
     if (page === 'form') return <RecipeFormPage recipe={editing} categories={categories} onSave={saveRecipe} onCancel={() => navigate('recipes')} />
-    if (page === 'categories') return <CategoriesPage categories={categories} recipes={recipes} onAdd={addCategory} onSelect={selectCategory} onBack={() => navigate('recipes')} />
-    if (page === 'settings') return <SettingsPage settings={settings} user={user} onChange={setSettings} onReset={resetData} onBack={() => navigate('recipes')} onSignOut={signOut} />
+    if (page === 'categories') return <CategoriesPage categories={categories} recipes={recipes} onAdd={addCategory} onSelect={selectCategory} />
+    if (page === 'settings') return <SettingsPage settings={settings} user={user} onChange={setSettings} onReset={resetData} onSignOut={signOut} />
     return <>
-      <RecipeList page={page} recipes={visibleRecipes} selectedId={selectedRecipe?.id} favorites={favorites} query={query} settings={settings} mobileDetail={mobileDetail} onQueryChange={setQuery} onSelect={openRecipe} onFavorite={toggleFavorite} onAdd={() => openRecipeForm()} onMenu={() => setMobileMenu((open) => !open)} onNavigate={navigate} />
+      <RecipeList page={page} recipes={visibleRecipes} selectedId={selectedRecipe?.id} favorites={favorites} query={query} settings={settings} mobileDetail={mobileDetail} onQueryChange={setQuery} onSelect={openRecipe} onFavorite={toggleFavorite} onAdd={() => openRecipeForm()} onMenu={() => setMobileMenu((open) => !open)} />
       <RecipeDetail recipe={selectedRecipe} favorite={favorites.has(selectedRecipe?.id)} isOpen={mobileDetail} onFavorite={(event) => toggleFavorite(selectedRecipe.id, event)} onEdit={() => openRecipeForm(selectedRecipe)} onBack={() => setMobileDetail(false)} />
     </>
   }
@@ -178,6 +179,7 @@ function App() {
     {toast && <div className="toast">{toast}</div>}
     <Sidebar page={page} isOpen={mobileMenu} categories={categories} recipes={recipes} activeCategory={activeCategory} user={user} profileName={settings.name} onNavigate={navigate} onSelectCategory={selectCategory} onAddCategory={addCategory} />
     {renderPage()}
+    <MobileTabs page={page === 'form' ? 'recipes' : page} onNavigate={navigate} />
   </main>
 }
 
