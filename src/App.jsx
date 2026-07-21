@@ -6,14 +6,24 @@ import RecipeDetail from './components/RecipeDetail'
 import CategoriesPage from './pages/CategoriesPage'
 import RecipeFormPage from './pages/RecipeFormPage'
 import SettingsPage from './pages/SettingsPage'
+import LoginPage from './pages/LoginPage'
 import { categoryColors, defaultSettings, starterRecipes } from './data/recipes'
-import { readLocal, writeLocal } from './utils/storage'
+import { backend } from './services/backend'
+
+const initialSession = backend.getSession()
+const initialUserData = initialSession ? backend.loadUserData(initialSession) : {
+  recipes: starterRecipes,
+  favorites: [1],
+  categories: [],
+  settings: defaultSettings,
+}
 
 function App() {
-  const [recipes, setRecipes] = useState(() => readLocal('recipebook.recipes', starterRecipes))
-  const [favorites, setFavorites] = useState(() => new Set(readLocal('recipebook.favorites', [1])))
-  const [customCategories, setCustomCategories] = useState(() => readLocal('recipebook.categories', []))
-  const [settings, setSettings] = useState(() => ({ ...defaultSettings, ...readLocal('recipebook.settings', {}) }))
+  const [user, setUser] = useState(initialSession)
+  const [recipes, setRecipes] = useState(initialUserData.recipes)
+  const [favorites, setFavorites] = useState(() => new Set(initialUserData.favorites))
+  const [customCategories, setCustomCategories] = useState(initialUserData.categories)
+  const [settings, setSettings] = useState(() => ({ ...defaultSettings, ...initialUserData.settings }))
   const [page, setPage] = useState('recipes')
   const [selectedId, setSelectedId] = useState(1)
   const [query, setQuery] = useState('')
@@ -23,10 +33,10 @@ function App() {
   const [editing, setEditing] = useState(null)
   const [toast, setToast] = useState('')
 
-  useEffect(() => writeLocal('recipebook.recipes', recipes), [recipes])
-  useEffect(() => writeLocal('recipebook.favorites', [...favorites]), [favorites])
-  useEffect(() => writeLocal('recipebook.categories', customCategories), [customCategories])
-  useEffect(() => writeLocal('recipebook.settings', settings), [settings])
+  useEffect(() => {
+    if (!user) return
+    backend.saveUserData(user.id, { recipes, favorites: [...favorites], categories: customCategories, settings })
+  }, [user, recipes, favorites, customCategories, settings])
   useEffect(() => { document.documentElement.dataset.theme = settings.darkMode ? 'dark' : 'light' }, [settings.darkMode])
 
   const categories = [...new Set([...Object.keys(categoryColors), ...customCategories, ...recipes.map((recipe) => recipe.category)])]
@@ -76,7 +86,10 @@ function App() {
   }
 
   function saveRecipe(recipe) {
-    const savedRecipe = recipe.id ? recipe : { ...recipe, id: Date.now() }
+    const now = new Date().toISOString()
+    const savedRecipe = recipe.id
+      ? { ...recipe, user_id: user.id, updated_at: now }
+      : { ...recipe, id: Date.now(), user_id: user.id, created_at: now, updated_at: now }
     setRecipes((current) => recipe.id ? current.map((item) => item.id === recipe.id ? savedRecipe : item) : [savedRecipe, ...current])
     setSelectedId(savedRecipe.id)
     setEditing(null)
@@ -99,19 +112,39 @@ function App() {
     notify('Local data reset')
   }
 
+  async function login(credentials) {
+    const signedInUser = await backend.signIn(credentials)
+    const data = backend.loadUserData(signedInUser)
+    setUser(signedInUser)
+    setRecipes(data.recipes)
+    setFavorites(new Set(data.favorites))
+    setCustomCategories(data.categories)
+    setSettings({ ...defaultSettings, ...data.settings, name: data.settings?.name || signedInUser.name })
+    navigate('recipes')
+  }
+
+  async function signOut() {
+    await backend.signOut()
+    setUser(null)
+    setMobileMenu(false)
+    setMobileDetail(false)
+  }
+
   function renderPage() {
     if (page === 'form') return <RecipeFormPage recipe={editing} categories={categories} onSave={saveRecipe} onCancel={() => navigate('recipes')} />
     if (page === 'categories') return <CategoriesPage categories={categories} recipes={recipes} onAdd={addCategory} onSelect={selectCategory} onBack={() => navigate('recipes')} />
-    if (page === 'settings') return <SettingsPage settings={settings} onChange={setSettings} onReset={resetData} onBack={() => navigate('recipes')} />
+    if (page === 'settings') return <SettingsPage settings={settings} user={user} onChange={setSettings} onReset={resetData} onBack={() => navigate('recipes')} onSignOut={signOut} />
     return <>
       <RecipeList page={page} recipes={visibleRecipes} selectedId={selectedRecipe?.id} favorites={favorites} query={query} settings={settings} mobileDetail={mobileDetail} onQueryChange={setQuery} onSelect={openRecipe} onFavorite={toggleFavorite} onAdd={() => openRecipeForm()} onMenu={() => setMobileMenu((open) => !open)} onNavigate={navigate} />
       <RecipeDetail recipe={selectedRecipe} favorite={favorites.has(selectedRecipe?.id)} isOpen={mobileDetail} onFavorite={(event) => toggleFavorite(selectedRecipe.id, event)} onEdit={() => openRecipeForm(selectedRecipe)} onBack={() => setMobileDetail(false)} />
     </>
   }
 
+  if (!user) return <LoginPage onLogin={login} />
+
   return <main className="app-shell">
     {toast && <div className="toast">{toast}</div>}
-    <Sidebar page={page} isOpen={mobileMenu} categories={categories} recipes={recipes} activeCategory={activeCategory} profileName={settings.name} onNavigate={navigate} onSelectCategory={selectCategory} onAddCategory={addCategory} />
+    <Sidebar page={page} isOpen={mobileMenu} categories={categories} recipes={recipes} activeCategory={activeCategory} user={user} profileName={settings.name} onNavigate={navigate} onSelectCategory={selectCategory} onAddCategory={addCategory} />
     {renderPage()}
   </main>
 }

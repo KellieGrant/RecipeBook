@@ -1,6 +1,6 @@
 import MobilePageHeader from '../components/MobilePageHeader'
 
-export default function SettingsPage({ settings, onChange, onReset, onBack }) {
+export default function SettingsPage({ settings, user, onChange, onReset, onBack, onSignOut }) {
   const set = (key, value) => onChange({ ...settings, [key]: value })
   return <div className="main-span"><MobilePageHeader title="Settings" onBack={onBack} /><section className="content-page settings-page">
     <div className="page-title"><div><span className="eyebrow">Make it yours</span><h1>Settings</h1><p>These preferences stay on this device.</p></div></div>
@@ -11,5 +11,6 @@ export default function SettingsPage({ settings, onChange, onReset, onBack }) {
       <label><span><strong>Show recipe images</strong><small>Display food photos in recipe cards</small></span><input type="checkbox" checked={settings.showImages} onChange={(event) => set('showImages', event.target.checked)} /></label>
     </div>
     <div className="danger-zone"><div><strong>Reset local data</strong><p>Restore the sample recipes and default settings.</p></div><button onClick={onReset}>Reset everything</button></div>
+    <div className="account-card"><div><span className="avatar">{settings.name.charAt(0).toUpperCase()}</span><span><strong>{settings.name}</strong><small>{user.email}</small></span></div><button onClick={onSignOut}>Sign out</button></div>
   </section></div>
 }
