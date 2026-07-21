@@ -30,6 +30,22 @@ const supabase = supabaseUrl && supabaseAnonKey ? createClient(supabaseUrl, supa
   },
 }) : null
 
+function normalizeRecipeFromDb(recipe) {
+  return {
+    id: recipe.id,
+    title: recipe.title,
+    category: recipe.category,
+    time: recipe.time,
+    serves: recipe.serves,
+    image: recipe.image,
+    ingredients: recipe.ingredients || [],
+    steps: recipe.steps || [],
+    user_id: recipe.user_id,
+    created_at: recipe.created_at,
+    updated_at: recipe.updated_at,
+  }
+}
+
 function normalizeRecipes(recipes, userId) {
   return (recipes || []).map((recipe) => ({
     ...recipe,
@@ -37,6 +53,52 @@ function normalizeRecipes(recipes, userId) {
     ingredients: recipe.ingredients || [],
     steps: recipe.steps || [],
   }))
+}
+
+async function fetchSupabaseRecipes(userId) {
+  if (!supabase) return []
+
+  const { data, error } = await supabase
+    .from('recipes')
+    .select('*')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false })
+
+  if (error) {
+    console.error('Supabase recipe fetch error:', error)
+    return []
+  }
+
+  return (data || []).map(normalizeRecipeFromDb)
+}
+
+async function upsertSupabaseRecipe(recipe, userId) {
+  if (!supabase) return null
+
+  const payload = {
+    id: recipe.id,
+    user_id: userId,
+    title: recipe.title,
+    category: recipe.category || 'Dinner',
+    time: recipe.time || '',
+    serves: recipe.serves ?? null,
+    ingredients: recipe.ingredients || [],
+    steps: recipe.steps || [],
+    image: recipe.image || null,
+    created_at: recipe.created_at || new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  }
+
+  const { data, error } = await supabase
+    .from('recipes')
+    .upsert(payload, { onConflict: 'id' })
+
+  if (error) {
+    console.error('Supabase recipe upsert error:', error)
+    return null
+  }
+
+  return data?.[0] ? normalizeRecipeFromDb(data[0]) : payload
 }
 
 export const supabaseBackend = {
@@ -112,16 +174,20 @@ export const supabaseBackend = {
 
   async loadUserData(user) {
     const existing = readLocal(userDataKey(user.id), null)
+    const recipes = await fetchSupabaseRecipes(user.id)
+
     if (existing) {
-      return {
+      const merged = {
         ...existing,
-        recipes: normalizeRecipes(existing.recipes, user.id),
+        recipes: recipes.length ? recipes : normalizeRecipes(existing.recipes, user.id),
         settings: { ...defaultSettings, ...existing.settings, name: existing.settings?.name || user.name },
       }
+      writeLocal(userDataKey(user.id), merged)
+      return merged
     }
 
     const migrated = legacyData()
-    migrated.recipes = normalizeRecipes(migrated.recipes, user.id)
+    migrated.recipes = recipes.length ? recipes : normalizeRecipes(migrated.recipes, user.id)
     migrated.settings.name = migrated.settings.name || user.name
     writeLocal(userDataKey(user.id), migrated)
     return migrated
@@ -138,5 +204,9 @@ export const supabaseBackend = {
     }
 
     await supabase.from('profiles').upsert(payload, { onConflict: 'id' })
+
+    for (const recipe of data.recipes) {
+      await upsertSupabaseRecipe(recipe, userId)
+    }
   },
 }

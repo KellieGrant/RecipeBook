@@ -108,7 +108,7 @@ function App() {
     setPage('form')
   }
 
-  function saveRecipe(recipe) {
+  async function saveRecipe(recipe) {
     const now = new Date().toISOString()
     const savedRecipe = recipe.id
       ? { ...recipe, user_id: user.id, updated_at: now }
@@ -118,7 +118,14 @@ function App() {
     setEditing(null)
     setPage('recipes')
     setMobileDetail(true)
-    notify('Recipe saved locally')
+
+    try {
+      await backend.saveUserData(user.id, { recipes: [savedRecipe, ...recipes.filter((item) => item.id !== savedRecipe.id)], favorites: [...favorites], categories: customCategories, settings })
+      notify('Recipe saved to your account')
+    } catch (error) {
+      console.error('Save recipe error:', error)
+      notify('Recipe saved locally, sync failed')
+    }
   }
 
   function addCategory() {
