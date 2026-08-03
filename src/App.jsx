@@ -28,6 +28,8 @@ function App() {
   const [mobileDetail, setMobileDetail] = useState(false)
   const [editing, setEditing] = useState(null)
   const [toast, setToast] = useState('')
+  const [selecting, setSelecting] = useState(false)
+  const [selectedForDelete, setSelectedForDelete] = useState(() => new Set())
 
   useEffect(() => {
     let active = true
@@ -80,6 +82,8 @@ function App() {
     setPage(nextPage)
     setMobileMenu(false)
     setMobileDetail(false)
+    setSelecting(false)
+    setSelectedForDelete(new Set())
     if (nextPage !== 'categories') setActiveCategory('All')
   }
 
@@ -101,6 +105,42 @@ function App() {
   function openRecipe(id) {
     setSelectedId(id)
     setMobileDetail(true)
+  }
+
+  function toggleRecipeSelection(id) {
+    setSelectedForDelete((current) => {
+      const next = new Set(current)
+      next.has(id) ? next.delete(id) : next.add(id)
+      return next
+    })
+  }
+
+  function toggleSelecting() {
+    setSelecting((current) => !current)
+    setSelectedForDelete(new Set())
+  }
+
+  async function deleteRecipes(recipeIds) {
+    const ids = [...recipeIds]
+    if (!ids.length) return
+    const label = ids.length === 1 ? 'this recipe' : `${ids.length} recipes`
+    if (!window.confirm(`Delete ${label}? This cannot be undone.`)) return
+
+    const remaining = recipes.filter((recipe) => !ids.includes(recipe.id))
+    setRecipes(remaining)
+    setFavorites((current) => new Set([...current].filter((id) => !ids.includes(id))))
+    setSelectedForDelete(new Set())
+    setSelecting(false)
+    setMobileDetail(false)
+    if (ids.includes(selectedId)) setSelectedId(remaining[0]?.id ?? null)
+
+    try {
+      await backend.deleteRecipes(user.id, ids)
+      notify(ids.length === 1 ? 'Recipe deleted' : `${ids.length} recipes deleted`)
+    } catch (error) {
+      console.error('Delete recipe error:', error)
+      notify('Deleted locally, sync failed')
+    }
   }
 
   function openRecipeForm(recipe = null) {
@@ -172,8 +212,8 @@ function App() {
     if (page === 'categories') return <CategoriesPage categories={categories} recipes={recipes} onAdd={addCategory} onSelect={selectCategory} />
     if (page === 'settings') return <SettingsPage settings={settings} user={user} onChange={setSettings} onReset={resetData} onSignOut={signOut} />
     return <>
-      <RecipeList page={page} recipes={visibleRecipes} selectedId={selectedRecipe?.id} favorites={favorites} query={query} settings={settings} mobileDetail={mobileDetail} onQueryChange={setQuery} onSelect={openRecipe} onFavorite={toggleFavorite} onAdd={() => openRecipeForm()} onMenu={() => setMobileMenu((open) => !open)} />
-      <RecipeDetail recipe={selectedRecipe} favorite={favorites.has(selectedRecipe?.id)} isOpen={mobileDetail} onFavorite={(event) => toggleFavorite(selectedRecipe.id, event)} onEdit={() => openRecipeForm(selectedRecipe)} onBack={() => setMobileDetail(false)} />
+      <RecipeList page={page} recipes={visibleRecipes} selectedId={selectedRecipe?.id} favorites={favorites} query={query} settings={settings} mobileDetail={mobileDetail} selecting={selecting} selectedForDelete={selectedForDelete} onQueryChange={setQuery} onSelect={openRecipe} onToggleSelection={toggleRecipeSelection} onToggleSelecting={toggleSelecting} onDeleteSelected={() => deleteRecipes(selectedForDelete)} onFavorite={toggleFavorite} onAdd={() => openRecipeForm()} onMenu={() => setMobileMenu((open) => !open)} />
+      <RecipeDetail recipe={selectedRecipe} favorite={favorites.has(selectedRecipe?.id)} isOpen={mobileDetail} onFavorite={(event) => toggleFavorite(selectedRecipe.id, event)} onEdit={() => openRecipeForm(selectedRecipe)} onDelete={() => deleteRecipes([selectedRecipe.id])} onBack={() => setMobileDetail(false)} />
     </>
   }
 

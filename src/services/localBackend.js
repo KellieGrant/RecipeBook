@@ -53,4 +53,8 @@ export const localBackend = {
   saveUserData(userId, data) {
     writeLocal(userDataKey(userId), data)
   },
+
+  async deleteRecipes() {
+    // The updated collection is persisted by saveUserData.
+  },
 }

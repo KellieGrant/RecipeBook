@@ -219,4 +219,10 @@ export const supabaseBackend = {
       await upsertSupabaseRecipe(recipe, userId)
     }
   },
+
+  async deleteRecipes(userId, recipeIds) {
+    if (!supabase || !recipeIds.length) return
+    const { error } = await supabase.from('recipes').delete().eq('user_id', userId).in('id', recipeIds)
+    if (error) throw error
+  },
 }
