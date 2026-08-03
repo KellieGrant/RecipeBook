@@ -1,6 +1,7 @@
 :root { --line: #e8e6e3; --muted: #747474; --panel: #fff; }
 button { border: 0; background: none; cursor: pointer; }
 .app-shell { width: min(1320px, calc(100vw - 48px)); height: min(900px, calc(100vh - 48px)); min-height: 680px; margin: 24px auto; display: grid; grid-template-columns: 250px 330px 1fr; background: var(--panel); border-radius: 18px; overflow: hidden; box-shadow: 0 20px 55px rgba(35,29,24,.12); }
+.loading-shell .page-empty { grid-column: 1 / -1; width: 100%; height: 100%; }
 .icon { display: inline-grid; width: 22px; place-items: center; font-size: 22px; line-height: 1; font-weight: 400; }
 .sidebar { display: flex; flex-direction: column; padding: 22px 18px 18px; background: linear-gradient(135deg,#fbfbfb,#f6f5f5); border-right: 1px solid var(--line); }
 .window-dots { display: flex; gap: 9px; margin: 2px 0 37px 7px; }.window-dots i { width: 13px; height: 13px; border-radius: 50%; background: #ff5f57; box-shadow: inset 0 0 0 1px rgba(0,0,0,.06); }.window-dots i:nth-child(2) { background: #febc2e; }.window-dots i:nth-child(3) { background: #28c840; }

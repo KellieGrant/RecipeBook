@@ -219,7 +219,7 @@ function App() {
 
   if (!user) return <LoginPage onLogin={login} />
   if (bootstrapping) {
-    return <main className="app-shell"><div className="page-empty"><h2>Loading your account…</h2></div></main>
+    return <main className="app-shell loading-shell"><div className="page-empty"><h2>Loading your account…</h2></div></main>
   }
 
   return <main className="app-shell">
